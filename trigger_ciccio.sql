@@ -90,5 +90,55 @@ begin
 end $$
 delimiter ;
 
+-- Controlla la coerenza delle date dentro Progetto
+drop trigger if exists check_data_stadioavanzamentoprogetto
+delimiter $$
+
+create trigger check_data_stadioavanzamentoprogetto
+before insert on StadioAvanzamentoProgetto for each row
+begin
+    if (new.DataPresentazione > new.DataApprovazione OR new.DataApprovazione > new.DataInizio
+        OR new.DataInizio > new.StimaFine OR new.DataApprovazione > new.DataFine 
+        OR new.DataInizio > new.DataFine 
+    ) then
+        signal sqlstate '45000'
+        set message_text = 'Date non compatibili';
+    end if;
+end $$
+delimiter ;
+
+
+drop trigger if exists check_maxlavoratori
+delimiter $$
+
+create trigger check_maxlavoratori
+before insert on Turno for each row
+begin
+
+    declare numerolavoratori integer default 1;
+    declare numeromassimolav integer default 0;
+    declare differenza integer default 0;
+
+    set numerolavoratori = (
+        select count(*) 
+        from Turno T
+        where T.CapoCantiere = new.CapoCantiere
+    );
+
+    set numeromassimolav = (
+        select MaxOperai
+        from CapoCantiere C
+        where C.CodFiscale = new.CapoCantiere
+    );
+
+    set differenza = numerolavoratori - numeromassimolav;
+
+    if differenza = 0 then
+        signal sqlstate '45000'
+        set message_text = 'Lavoratore non inseribile - Numero massimo raggiunto';
+    end if;
+end $$
+delimiter ;
+
 
 
