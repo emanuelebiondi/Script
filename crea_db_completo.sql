@@ -17,14 +17,14 @@ CREATE TABLE `Edificio` (
         FOREIGN KEY (`AreaGeografica`) REFERENCES `AreaGeografica`(`Nome`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `AreaGeografica`;
 CREATE TABLE `AreaGeografica` (
     `Nome` VARCHAR(255) NOT NULL, 
     PRIMARY KEY (`Nome`)
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `Rischio`;
@@ -33,7 +33,7 @@ CREATE TABLE `Rischio` (
     `Tipo` VARCHAR(255) NOT NULL,
     `Coefficiente` DECIMAL(2,1) UNSIGNED NOT NULL,
     PRIMARY KEY (`CodRischio`)
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `StoricoCalamità`;
@@ -50,7 +50,7 @@ CREATE TABLE `StoricoCalamità` (
         FOREIGN KEY (`AreaGeografica`) REFERENCES `AreaGeografica` (`Nome`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION 
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `Piano`;
@@ -65,7 +65,7 @@ CREATE TABLE `Piano` (
         FOREIGN KEY (`Edificio`) REFERENCES `Edificio` (`CodEdificio`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `Vano`;
@@ -87,14 +87,14 @@ CREATE TABLE `Vano` (
         FOREIGN KEY (`Funzione`) REFERENCES `Funzione`(`Nome`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `Funzione`;
 CREATE TABLE `Funzione` (
     `Nome` VARCHAR(255) NOT NULL, 
     PRIMARY KEY (`Nome`)
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `Muro`;
@@ -102,7 +102,7 @@ CREATE TABLE `Muro` (
     `CodMuro` INT UNSIGNED NOT NULL ,
     `Lunghezza` DECIMAL(4,2) NOT NULL,
     PRIMARY KEY (`CodMuro`)
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `PuntoAccesso`;
@@ -117,7 +117,7 @@ CREATE TABLE `PuntoAccesso` (
         FOREIGN KEY (`Muro`) REFERENCES `Muro`(`CodMuro`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `Finestra`;
@@ -131,7 +131,7 @@ CREATE TABLE `Finestra` (
         FOREIGN KEY (`Muro`) REFERENCES `Muro`(`CodMuro`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `Sensore`;
@@ -148,7 +148,7 @@ CREATE TABLE `Sensore`(
         FOREIGN KEY (`Muro`) REFERENCES `Muro`(`CodMuro`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `MisuraMonovalore`;
@@ -162,7 +162,7 @@ CREATE TABLE `MisuraMonovalore`(
         FOREIGN KEY(`Sensore`) REFERENCES `Sensore`(`CodSensore`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `MisuraTrivalore`;
@@ -178,7 +178,7 @@ CREATE TABLE `MisuraTrivalore`(
         FOREIGN KEY(`Sensore`) REFERENCES `Sensore`(`CodSensore`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXIST `Alert`;
@@ -198,7 +198,7 @@ CREATE TABLE `Alert` (
         FOREIGN KEY (`MisuraTRivalore`) REFERENCES `MisuraTrivalore`(`TimeStamp`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `Materiale`;
@@ -209,7 +209,7 @@ CREATE TABLE `Materiale` (
     `Quantità` INT UNSIGNED NOT NULL,
     `Tipologia` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`CodLotto`,`Fornitore`)
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `Pietra`;
@@ -228,7 +228,7 @@ CREATE TABLE `Pietra` (
         FOREIGN KEY (`CodLotto`, `Fornitore`) REFERENCES `Materiale`(`CodLotto`,`Fornitore`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `Intonaco`;
@@ -243,7 +243,7 @@ CREATE TABLE `Intonaco` (
         FOREIGN KEY (`CodLotto`, `Fornitore`) REFERENCES `Materiale`(`CodLotto`,`Fornitore`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `Mattone`;
@@ -277,7 +277,7 @@ CREATE TABLE `Piastrella` (
         FOREIGN KEY (`CodLotto`, `Fornitore`) REFERENCES `Materiale`(`CodLotto`,`Fornitore`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `MaterialeGenerico`;
@@ -295,7 +295,7 @@ CREATE TABLE `MaterialeGenerico` (
         FOREIGN KEY (`CodLotto`, `Fornitore`) REFERENCES `Materiale`(`CodLotto`,`Fornitore`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
-);
+)
 ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `Progetto`;
