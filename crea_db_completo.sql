@@ -69,6 +69,10 @@ CREATE TABLE `Calamita` (
 )
 ENGINE = InnoDB;
 
+
+---------------------------------
+-- CREATE TABLE Piano 
+---------------------------------
 DROP TABLE IF EXISTS `Piano`;
 CREATE TABLE `Piano` (
     `Edificio` INT UNSIGNED NOT NULL,
@@ -84,6 +88,10 @@ CREATE TABLE `Piano` (
 )
 ENGINE = InnoDB;
 
+
+---------------------------------
+-- CREATE TABLE Vano 
+---------------------------------
 DROP TABLE IF EXISTS `Vano`;
 CREATE TABLE `Vano` (
     `CodVano` INT NOT NULL ,
@@ -106,13 +114,21 @@ CREATE TABLE `Vano` (
 )
 ENGINE = InnoDB;
 
+
+---------------------------------
+-- CREATE TABLE Funzione 
+---------------------------------
 DROP TABLE IF EXISTS `Funzione`;
 CREATE TABLE `Funzione` (
-    `Nome` VARCHAR(255) NOT NULL, 
+    `Nome` VARCHAR(45) NOT NULL, 
     PRIMARY KEY (`Nome`)
 )
 ENGINE = InnoDB;
 
+
+---------------------------------
+-- CREATE TABLE Muro 
+---------------------------------
 DROP TABLE IF EXISTS `Muro`;
 CREATE TABLE `Muro` (
     `CodMuro` INT UNSIGNED NOT NULL ,
@@ -121,6 +137,10 @@ CREATE TABLE `Muro` (
 )
 ENGINE = InnoDB;
 
+
+---------------------------------
+-- CREATE TABLE PuntoAccesso 
+---------------------------------
 DROP TABLE IF EXISTS `PuntoAccesso`;
 CREATE TABLE `PuntoAccesso` (
     `CodPuntoAccesso` INT UNSIGNED NOT NULL ,
@@ -136,6 +156,9 @@ CREATE TABLE `PuntoAccesso` (
 )
 ENGINE = InnoDB;
 
+---------------------------------
+-- CREATE TABLE Finstra 
+---------------------------------
 DROP TABLE IF EXISTS `Finestra`;
 CREATE TABLE `Finestra` (
     `CodFinestra` INT UNSIGNED NOT NULL ,
@@ -150,6 +173,10 @@ CREATE TABLE `Finestra` (
 )
 ENGINE = InnoDB;
 
+
+---------------------------------
+-- CREATE TABLE Sensore 
+---------------------------------
 DROP TABLE IF EXISTS `Sensore`;
 CREATE TABLE `Sensore`(
     `CodSensore` INT NOT NULL ,
@@ -167,6 +194,9 @@ CREATE TABLE `Sensore`(
 )
 ENGINE = InnoDB;
 
+---------------------------------
+-- CREATE TABLE MisuraMonovalore 
+---------------------------------
 DROP TABLE IF EXISTS `MisuraMonovalore`;
 CREATE TABLE `MisuraMonovalore`(
     `Sensore` INT UNSIGNED NOT NULL,
@@ -181,6 +211,9 @@ CREATE TABLE `MisuraMonovalore`(
 )
 ENGINE = InnoDB;
 
+---------------------------------
+-- CREATE TABLE MisuraTrivalore 
+---------------------------------
 DROP TABLE IF EXISTS `MisuraTrivalore`;
 CREATE TABLE `MisuraTrivalore`(
     `Sensore` INT UNSIGNED NOT NULL,
@@ -197,6 +230,9 @@ CREATE TABLE `MisuraTrivalore`(
 )
 ENGINE = InnoDB;
 
+---------------------------------
+-- CREATE TABLE Alert 
+---------------------------------
 DROP TABLE IF EXIST `Alert`;
 CREATE TABLE `Alert` (
     `CodAlert` INT UNSIGNED NOT NULL ,
@@ -216,6 +252,33 @@ CREATE TABLE `Alert` (
         ON UPDATE NO ACTION
 )
 ENGINE = InnoDB;
+
+
+---------------------------------
+-- CREATE TABLE Progetto 
+---------------------------------
+DROP TABLE IF EXISTS `Progetto`;
+CREATE TABLE IF NOT EXISTS `Progetto` (
+    `CodProgetto` INT NOT NULL PRIMARY KEY,
+    `DataPresentazione` DATE NOT NULL,
+    `DataApprovazione`  DATE NOT NULL,
+    `DataInizio`    DATE NOT NULL,
+    `StimaFine`     DATE NOT NULL,
+    `DataFine`      DATE NOT NULL,
+    `CostoProgetto` DECIMAL(10,2) NULL,
+    INDEX `fk_Progetto_Edificio1_idx` (`Edificio` ASC) VISIBLE,
+    CONSTRAINT `fk_Progetto_Edificio1`
+        FOREIGN KEY (`Edificio_rid`)
+        REFERENCES `Edificio` (`CodEdificio`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
+)
+ENGINE = InnoDB;
+
+---------------------------------
+-- CREATE TABLE StatoAvanzamentoProgetto 
+---------------------------------
+
 
 DROP TABLE IF EXISTS `Materiale`;
 CREATE TABLE `Materiale` (
@@ -315,23 +378,6 @@ CREATE TABLE `MaterialeGenerico` (
 )
 ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS `Progetto`;
-CREATE TABLE IF NOT EXISTS `Progetto` (
-    `CodProgetto` INT NOT NULL PRIMARY KEY,
-    `DataPresentazione` DATE NOT NULL,
-    `DataApprovazione`  DATE NOT NULL,
-    `DataInizio`    DATE NOT NULL,
-    `StimaFine`     DATE NOT NULL,
-    `DataFine`      DATE NOT NULL,
-    `CostoProgetto` DECIMAL(10,2) NULL,
-    INDEX `fk_Progetto_Edificio1_idx` (`Edificio` ASC) VISIBLE,
-    CONSTRAINT `fk_Progetto_Edificio1`
-        FOREIGN KEY (`Edificio_rid`)
-        REFERENCES `Edificio` (`CodEdificio`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION
-)
-ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `Responsabile`;
 CREATE TABLE IF NOT EXISTS `Responsabile` (
