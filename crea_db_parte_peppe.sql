@@ -16,7 +16,7 @@ CREATE TABLE `Edificio` (
     INDEX `fk_Edificio_Ubicazione_idx` (`AreaGeografica` ASC),
     CONSTRAINT `fk_Edificio_Ubicazione`
         FOREIGN KEY (`AreaGeografica`) REFERENCES `AreaGeografica`(`Nome`)
-        ON DELETE NO ACTION,
+        ON DELETE NO ACTION
         ON UPDATE NO ACTION
 );
 
