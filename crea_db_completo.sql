@@ -280,103 +280,7 @@ ENGINE = InnoDB;
 ---------------------------------
 
 
-DROP TABLE IF EXISTS `Materiale`;
-CREATE TABLE `Materiale` (
-    `CodLotto` INT UNSIGNED NOT NULL,
-    `Fornitore` VARCHAR(255) NOT NULL,
-    `DataAcquisto` DATE NOT NULL,
-    `Quantita` INT UNSIGNED NOT NULL,
-    `Tipologia` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`CodLotto`,`Fornitore`)
-)
-ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS `Pietra`;
-CREATE TABLE `Pietra` (
-    `CodLotto` INT UNSIGNED NOT NULL,
-    `Fornitore` VARCHAR(255) NOT NULL,
-    `Tipo` VARCHAR(255) NOT NULL,
-    `SuperficieMedia` FLOAT UNSIGNED NOT NULL,
-    `PesoMedio` FLOAT UNSIGNED NOT NULL,
-    `X` INT UNSIGNED NOT NULL,
-    `Y` INT UNSIGNED NOT NULL,
-    `Z` INT UNSIGNED NOT NULL,
-    PRIMARY KEY (`CodLotto`,`Fornitore`),
-    INDEX `fk_Pietra_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
-    CONSTRAINT `fk_Pietra_Materiale`
-        FOREIGN KEY (`CodLotto`, `Fornitore`) REFERENCES `Materiale`(`CodLotto`,`Fornitore`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION
-)
-ENGINE = InnoDB;
-
-DROP TABLE IF EXISTS `Intonaco`;
-CREATE TABLE `Intonaco` (
-    `CodLotto` INT UNSIGNED NOT NULL,
-    `Fornitore` VARCHAR(255) NOT NULL,
-    `Tipo` VARCHAR(255) NOT NULL,
-    `Spessore` FLOAT UNSIGNED NOT NULL,
-    PRIMARY KEY (`CodLotto`,`Fornitore`),
-    INDEX `fk_Intonaco_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
-    CONSTRAINT `fk_Intonaco_Materiale`
-        FOREIGN KEY (`CodLotto`, `Fornitore`) REFERENCES `Materiale`(`CodLotto`,`Fornitore`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION
-)
-ENGINE = InnoDB;
-
-DROP TABLE IF EXISTS `Mattone`;
-CREATE TABLE `Mattone` (
-    `CodLotto` INT UNSIGNED NOT NULL,
-    `Fornitore` VARCHAR(255) NOT NULL,
-    `Alveolatura` VARCHAR(255) NOT NULL,
-    `Composizione` VARCHAR(255) NOT NULL,
-    `Isolante` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`CodLotto`,`Fornitore`),
-    INDEX `fk_Mattone_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
-    CONSTRAINT `fk_Mattone_Materiale`
-        FOREIGN KEY (`CodLotto`, `Fornitore`) REFERENCES `Materiale`(`CodLotto`,`Fornitore`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION
-)
-ENGINE = InnoDB;
-
-DROP TABLE IF EXISTS `Piastrella`;
-CREATE TABLE `Piastrella` (
-    `CodLotto` INT UNSIGNED NOT NULL,
-    `Fornitore` VARCHAR(255) NOT NULL,
-    `Tipo` VARCHAR(255) NOT NULL,
-    `Fuga` FLOAT UNSIGNED NOT NULL,
-    `Materiale` VARCHAR(255) NOT NULL,
-    `X` INT UNSIGNED NOT NULL,
-    `Y` INT UNSIGNED NOT NULL,
-    `Z` INT UNSIGNED NOT NULL,
-    PRIMARY KEY (`CodLotto`,`Fornitore`),
-    INDEX `fk_Piastrella_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
-    CONSTRAINT `fk_Piastrella_Materiale`
-        FOREIGN KEY (`CodLotto`, `Fornitore`) REFERENCES `Materiale`(`CodLotto`,`Fornitore`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION
-)
-ENGINE = InnoDB;
-
-DROP TABLE IF EXISTS `MaterialeGenerico`;
-CREATE TABLE `MaterialeGenerico` (
-    `CodLotto` INT UNSIGNED NOT NULL,
-    `Fornitore` VARCHAR(255) NOT NULL,
-    `Descrizione` VARCHAR(255) NOT NULL,
-    `Funzione` VARCHAR(255) NOT NULL,
-    `X` INT UNSIGNED NOT NULL,
-    `Y` INT UNSIGNED NOT NULL,
-    `Z` INT UNSIGNED NOT NULL,
-    PRIMARY KEY (`CodLotto`,`Fornitore`),
-    INDEX `fk_MaterialeGenerico_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
-    CONSTRAINT `fk_MaterialeGenerico_Materiale`
-        FOREIGN KEY (`CodLotto`, `Fornitore`) REFERENCES `Materiale`(`CodLotto`,`Fornitore`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION
-)
-ENGINE = InnoDB;
 
 
 DROP TABLE IF EXISTS `Responsabile`;
@@ -489,6 +393,104 @@ CREATE TABLE `AcquistoMateriale` (
     CONSTRAINT `fk_Materiale_has_Lavoro_Lavoro1`
         FOREIGN KEY (`Lavoro`)
         REFERENCES `Materiale` (`CodLotto`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
+)
+ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS `Materiale`;
+CREATE TABLE `Materiale` (
+    `CodLotto` INT UNSIGNED NOT NULL,
+    `Fornitore` VARCHAR(255) NOT NULL,
+    `DataAcquisto` DATE NOT NULL,
+    `Quantita` INT UNSIGNED NOT NULL,
+    `Tipologia` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`CodLotto`,`Fornitore`)
+)
+ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS `Pietra`;
+CREATE TABLE `Pietra` (
+    `CodLotto` INT UNSIGNED NOT NULL,
+    `Fornitore` VARCHAR(255) NOT NULL,
+    `Tipo` VARCHAR(255) NOT NULL,
+    `SuperficieMedia` FLOAT UNSIGNED NOT NULL,
+    `PesoMedio` FLOAT UNSIGNED NOT NULL,
+    `X` INT UNSIGNED NOT NULL,
+    `Y` INT UNSIGNED NOT NULL,
+    `Z` INT UNSIGNED NOT NULL,
+    PRIMARY KEY (`CodLotto`,`Fornitore`),
+    INDEX `fk_Pietra_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
+    CONSTRAINT `fk_Pietra_Materiale`
+        FOREIGN KEY (`CodLotto`, `Fornitore`) REFERENCES `Materiale`(`CodLotto`,`Fornitore`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
+)
+ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS `Intonaco`;
+CREATE TABLE `Intonaco` (
+    `CodLotto` INT UNSIGNED NOT NULL,
+    `Fornitore` VARCHAR(255) NOT NULL,
+    `Tipo` VARCHAR(255) NOT NULL,
+    `Spessore` FLOAT UNSIGNED NOT NULL,
+    PRIMARY KEY (`CodLotto`,`Fornitore`),
+    INDEX `fk_Intonaco_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
+    CONSTRAINT `fk_Intonaco_Materiale`
+        FOREIGN KEY (`CodLotto`, `Fornitore`) REFERENCES `Materiale`(`CodLotto`,`Fornitore`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
+)
+ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS `Mattone`;
+CREATE TABLE `Mattone` (
+    `CodLotto` INT UNSIGNED NOT NULL,
+    `Fornitore` VARCHAR(255) NOT NULL,
+    `Alveolatura` VARCHAR(255) NOT NULL,
+    `Composizione` VARCHAR(255) NOT NULL,
+    `Isolante` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`CodLotto`,`Fornitore`),
+    INDEX `fk_Mattone_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
+    CONSTRAINT `fk_Mattone_Materiale`
+        FOREIGN KEY (`CodLotto`, `Fornitore`) REFERENCES `Materiale`(`CodLotto`,`Fornitore`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
+)
+ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS `Piastrella`;
+CREATE TABLE `Piastrella` (
+    `CodLotto` INT UNSIGNED NOT NULL,
+    `Fornitore` VARCHAR(255) NOT NULL,
+    `Tipo` VARCHAR(255) NOT NULL,
+    `Fuga` FLOAT UNSIGNED NOT NULL,
+    `Materiale` VARCHAR(255) NOT NULL,
+    `X` INT UNSIGNED NOT NULL,
+    `Y` INT UNSIGNED NOT NULL,
+    `Z` INT UNSIGNED NOT NULL,
+    PRIMARY KEY (`CodLotto`,`Fornitore`),
+    INDEX `fk_Piastrella_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
+    CONSTRAINT `fk_Piastrella_Materiale`
+        FOREIGN KEY (`CodLotto`, `Fornitore`) REFERENCES `Materiale`(`CodLotto`,`Fornitore`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
+)
+ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS `MaterialeGenerico`;
+CREATE TABLE `MaterialeGenerico` (
+    `CodLotto` INT UNSIGNED NOT NULL,
+    `Fornitore` VARCHAR(255) NOT NULL,
+    `Descrizione` VARCHAR(255) NOT NULL,
+    `Funzione` VARCHAR(255) NOT NULL,
+    `X` INT UNSIGNED NOT NULL,
+    `Y` INT UNSIGNED NOT NULL,
+    `Z` INT UNSIGNED NOT NULL,
+    PRIMARY KEY (`CodLotto`,`Fornitore`),
+    INDEX `fk_MaterialeGenerico_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
+    CONSTRAINT `fk_MaterialeGenerico_Materiale`
+        FOREIGN KEY (`CodLotto`, `Fornitore`) REFERENCES `Materiale`(`CodLotto`,`Fornitore`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
 )
