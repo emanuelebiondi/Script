@@ -2,31 +2,43 @@ DROP SCHEMA IF EXISTS PBCC;
 CREATE SCHEMA IF NOT EXISTS PBCC DEFAULT CHARACTER SET utf8;
 USE PBCC;
 
+---------------------------------
+-- CREATE TABLE Edificio 
+---------------------------------
 DROP TABLE IF EXISTS `Edificio`;
 CREATE TABLE `Edificio` (
-    `CodEdificio` INT UNSIGNED NOT NULL,
-    `Tipologia` VARCHAR(255) NOT NULL,
+    `CodEdificio` INT NOT NULL AUTO_INCREMENT,
+    `Tipologia` VARCHAR(45) NOT NULL,
     `DataRealizzazione` DATE NULL,
-    `StatoEdificio` INT UNSIGNED NULL,
+    `StatoEdificio` INT UNSIGNED NULL, -- NON è un bool?
     `Latitudine` DECIMAL(9,6) UNSIGNED NOT NULL,
     `Longitudine` DECIMAL(9,6) UNSIGNED NOT NULL,
-	`AreaGeografica` VARCHAR(255) not null,
+	`AreaGeografica` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`CodEdificio`),
-    INDEX `fk_Edificio_Ubicazione_idx` (`AreaGeografica` ASC),
-    CONSTRAINT `fk_Edificio_Ubicazione`
-        FOREIGN KEY (`AreaGeografica`) REFERENCES `AreaGeografica`(`Nome`)
+    INDEX `fk_Edificio_AreaGeografica_idx` (`AreaGeografica` ASC) VISIBLE,
+    CONSTRAINT chk_coords CHECK (Latitudine between -90 and 90 and Longitudine between -180 and 180),
+    CONSTRAINT `fk_Edificio_AreaGeografica`
+        FOREIGN KEY (`AreaGeografica`) REFERENCES `AreaGeografica` (`Nome`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
 )
 ENGINE = InnoDB;
 
+
+---------------------------------
+-- CREATE TABLE AreaGeografica 
+---------------------------------
 DROP TABLE IF EXISTS `AreaGeografica`;
 CREATE TABLE `AreaGeografica` (
-    `Nome` VARCHAR(255) NOT NULL, 
+    `Nome` VARCHAR(45) NOT NULL, 
     PRIMARY KEY (`Nome`)
 )
 ENGINE = InnoDB;
 
+
+---------------------------------
+-- CREATE TABLE Rischio 
+---------------------------------
 DROP TABLE IF EXISTS `Rischio`;
 CREATE TABLE `Rischio` (
     `CodRischio` INT UNSIGNED NOT NULL ,
@@ -36,17 +48,21 @@ CREATE TABLE `Rischio` (
 )
 ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS `StoricoCalamità`;
-CREATE TABLE `StoricoCalamità` (
+
+---------------------------------
+-- CREATE TABLE Calamità
+---------------------------------
+DROP TABLE IF EXISTS `Calamita`;
+CREATE TABLE `Calamita` (
     `AreaGeografica` INT UNSIGNED NOT NULL,
     `Tipologia` VARCHAR(255) NOT NULL,
     `Data` DATE NOT NULL,
-    `LivelloIntensità` DECIMAL(4,1) UNSIGNED NOT NULL,
+    `LivelloIntensita` DECIMAL(4,1) UNSIGNED NOT NULL,
     `Longitudine` DECIMAL(9,6) UNSIGNED NOT NULL,
     `Latitudine` DECIMAL(9,6) UNSIGNED NULL,
-    PRIMARY KEY (AreaGeografica, Tipologia, Data, LivelloIntensità),
-    INDEX `fk_StoricoCalamità_idx`(`AreaGeografica`ASC),
-    CONSTRAINT `fk_StoricoCalamità`
+    PRIMARY KEY (AreaGeografica, Tipologia, Data, LivelloIntensita),
+    INDEX `fk_Calamita_idx`(`AreaGeografica`ASC),
+    CONSTRAINT `fk_Calamita`
         FOREIGN KEY (`AreaGeografica`) REFERENCES `AreaGeografica` (`Nome`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION 
@@ -206,7 +222,7 @@ CREATE TABLE `Materiale` (
     `CodLotto` INT UNSIGNED NOT NULL,
     `Fornitore` VARCHAR(255) NOT NULL,
     `DataAcquisto` DATE NOT NULL,
-    `Quantità` INT UNSIGNED NOT NULL,
+    `Quantita` INT UNSIGNED NOT NULL,
     `Tipologia` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`CodLotto`,`Fornitore`)
 )
