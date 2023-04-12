@@ -276,8 +276,12 @@ CREATE TABLE IF NOT EXISTS `Progetto` (
 ENGINE = InnoDB;
 
 ---------------------------------
--- CREATE TABLE Resposnabile 
+-- CREATE TABLE StatoAvanzamentoProgetto 
 ---------------------------------
+
+
+
+
 
 DROP TABLE IF EXISTS `Responsabile`;
 CREATE TABLE IF NOT EXISTS `Responsabile` (
@@ -287,10 +291,6 @@ CREATE TABLE IF NOT EXISTS `Responsabile` (
 )
 ENGINE = InnoDB;
 
-
----------------------------------
--- CREATE TABLE StatoAvanzamentoProgetto 
----------------------------------
 DROP TABLE IF EXISTS `StadioAvanzamentoProgetto`;
 CREATE TABLE IF NOT EXISTS `StadioAvanzamentoProgetto` (
     `CodStato` INT NOT NULL,
@@ -311,10 +311,6 @@ CREATE TABLE IF NOT EXISTS `StadioAvanzamentoProgetto` (
 )
 ENGINE = InnoDB;
 
-
----------------------------------
--- CREATE TABLE Lavoro 
----------------------------------
 DROP TABLE IF EXISTS `Lavoro`;
 CREATE TABLE IF NOT EXISTS `Lavoro` (
     `CodLavoro` INT NOT NULL,
@@ -332,10 +328,6 @@ CREATE TABLE IF NOT EXISTS `Lavoro` (
 )
 ENGINE = InnoDB;
 
-
----------------------------------
--- CREATE TABLE Turno 
----------------------------------
 DROP TABLE IF EXISTS `Turno`;
 CREATE TABLE IF NOT EXISTS `Turno` (
     `TimestampInizio` DATETIME(3) NOT NULL,
@@ -364,10 +356,6 @@ CREATE TABLE IF NOT EXISTS `Turno` (
 )
 ENGINE = InnoDB;
 
-
----------------------------------
--- CREATE TABLE CapoCantiere 
----------------------------------
 DROP TABLE IF EXISTS `CapoCantiere`;
 CREATE TABLE IF NOT EXISTS `CapoCantiere` (
     `CodFiscale` CHAR(16) NOT NULL,
@@ -382,10 +370,6 @@ CREATE TABLE IF NOT EXISTS `CapoCantiere` (
 )
 ENGINE = InnoDB;
 
-
----------------------------------
--- CREATE TABLE Lavoratore 
----------------------------------
 DROP TABLE IF EXISTS `Lavoratore`;
 CREATE TABLE IF NOT EXISTS `Lavoratore` (
     `CodFiscale` CHAR(16) NOT NULL,
@@ -399,10 +383,6 @@ CREATE TABLE IF NOT EXISTS `Lavoratore` (
 )
 ENGINE = InnoDB;
 
-
----------------------------------
--- CREATE TABLE AcquistoMateriale 
----------------------------------
 DROP TABLE IF EXISTS `AcquistoMateriale`;
 CREATE TABLE `AcquistoMateriale` (
     `Lavoro` INT NOT NULL,
@@ -418,10 +398,6 @@ CREATE TABLE `AcquistoMateriale` (
 )
 ENGINE = InnoDB;
 
-
----------------------------------
--- CREATE TABLE Materiale 
----------------------------------
 DROP TABLE IF EXISTS `Materiale`;
 CREATE TABLE `Materiale` (
     `CodLotto` INT UNSIGNED NOT NULL,
@@ -433,10 +409,6 @@ CREATE TABLE `Materiale` (
 )
 ENGINE = InnoDB;
 
-
----------------------------------
--- CREATE TABLE Pietra 
----------------------------------
 DROP TABLE IF EXISTS `Pietra`;
 CREATE TABLE `Pietra` (
     `CodLotto` INT UNSIGNED NOT NULL,
@@ -456,10 +428,6 @@ CREATE TABLE `Pietra` (
 )
 ENGINE = InnoDB;
 
-
----------------------------------
--- CREATE TABLE Intonaco 
----------------------------------
 DROP TABLE IF EXISTS `Intonaco`;
 CREATE TABLE `Intonaco` (
     `CodLotto` INT UNSIGNED NOT NULL,
@@ -475,10 +443,6 @@ CREATE TABLE `Intonaco` (
 )
 ENGINE = InnoDB;
 
-
----------------------------------
--- CREATE TABLE Mattone 
----------------------------------
 DROP TABLE IF EXISTS `Mattone`;
 CREATE TABLE `Mattone` (
     `CodLotto` INT UNSIGNED NOT NULL,
@@ -495,10 +459,6 @@ CREATE TABLE `Mattone` (
 )
 ENGINE = InnoDB;
 
-
----------------------------------
--- CREATE TABLE Piastrella 
----------------------------------
 DROP TABLE IF EXISTS `Piastrella`;
 CREATE TABLE `Piastrella` (
     `CodLotto` INT UNSIGNED NOT NULL,
@@ -518,10 +478,6 @@ CREATE TABLE `Piastrella` (
 )
 ENGINE = InnoDB;
 
-
----------------------------------
--- CREATE TABLE MaterialeGenerico 
----------------------------------
 DROP TABLE IF EXISTS `MaterialeGenerico`;
 CREATE TABLE `MaterialeGenerico` (
     `CodLotto` INT UNSIGNED NOT NULL,
