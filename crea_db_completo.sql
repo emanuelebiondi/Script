@@ -275,7 +275,8 @@ CREATE TABLE `Mattone` (
         FOREIGN KEY (`CodLotto`, `Fornitore`) REFERENCES `Materiale`(`CodLotto`,`Fornitore`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
-);
+)
+ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `Piastrella`;
 CREATE TABLE `Piastrella` (
