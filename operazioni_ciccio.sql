@@ -5,12 +5,18 @@ delimiter $$
 
 create procedure stampa_registrazioni_24 (in CodEdificio int)
 begin
-    with RegistrazioneScelta as(
-        select 
-        from Sensore S 
-        where
+    with RegistrazioniEdificio as(
+        select M.Sensore, M.ValoreX, M.ValoreY, M.ValoreZ
+        from Sensore S inner join Misura M on S.CodSensore=M.Sensore
+        where Edificio = _CodEdificio
+            and timestamp >= current_timestamp - interval 1 day
     )
 
+    select *
+    from RegistrazioniEdificio
+    order by Sensore;
+    
+end $$
 delimiter ;
 
 --OP.2 Stampa le informazioni della pianta di ogni piano di un edificio
