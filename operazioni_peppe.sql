@@ -1,3 +1,4 @@
+--OP. 7------------------------------------------------
 DROP PROCEDURE IF EXISTS RischiAnnuiEdificio;
 DELIMITER $$
 
@@ -16,6 +17,8 @@ CREATE PROCEDURE RischiAnnuiEdificio(IN CodEdificio_f INT UNSIGNED)
     END $$
 DELIMITER;
 
+
+--OP. 9----------------------------------------------
 DROP PROCEDURE IF EXISTS InfoAlert;
 DELIMITER $$
 
