@@ -1,5 +1,5 @@
-DROP SCHEMA IF EXISTS PBCC;
-CREATE SCHEMA IF NOT EXISTS PBCC DEFAULT CHARACTER SET utf8;
+DROP SCHEMA IF EXISTS SmartConstructionCompany;
+CREATE SCHEMA IF NOT EXISTS SmartConstructionCompany DEFAULT CHARACTER SET utf8;
 USE PBCC;
 
 
@@ -205,38 +205,20 @@ CREATE TABLE `Sensore`(
 ENGINE = InnoDB;
 
 
----------------------------------
--- CREATE TABLE MisuraMonovalore 
----------------------------------
-DROP TABLE IF EXISTS `MisuraMonovalore`;
-CREATE TABLE `MisuraMonovalore`(
-    `Sensore` INT UNSIGNED NOT NULL,
-    `TimeStamp` TIMESTAMP NOT NULL,
-    `Valore` DECIMAL(5,2) UNSIGNED NULL,
-    PRIMARY KEY(`Sensore`, `TimeStamp`),
-    INDEX `fk_MisuraMonovalore_Sensore_idx` (`Sensore` ASC),
-    CONSTRAINT `fk_MisuraMonovalore_Sensore`
-        FOREIGN KEY(`Sensore`) 
-        REFERENCES `Sensore`(`CodSensore`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION
-)
-ENGINE = InnoDB;
-
 
 ---------------------------------
--- CREATE TABLE MisuraTrivalore 
+-- CREATE TABLE Misura
 ---------------------------------
-DROP TABLE IF EXISTS `MisuraTrivalore`;
-CREATE TABLE `MisuraTrivalore`(
+DROP TABLE IF EXISTS `Misura`;
+CREATE TABLE `Misura`(
     `Sensore` INT UNSIGNED NOT NULL,
     `TimeStamp` TIMESTAMP NOT NULL,
     `ValoreX` DECIMAL(5,2) UNSIGNED,
     `ValoreY` DECIMAL(5,2) UNSIGNED,
     `ValoreZ` DECIMAL(5,2) UNSIGNED,
     PRIMARY KEY(`Sensore`, `TimeStamp`),
-    INDEX `fk_MisuraTrivalore_Sensore_idx` (`Sensore` ASC),
-    CONSTRAINT `fk_Misuratrivalore_Sensore`
+    INDEX `fk_Misura_Sensore_idx` (`Sensore` ASC) VISIBLE,
+    CONSTRAINT `fk_Misura_Sensore`
         FOREIGN KEY(`Sensore`)
         REFERENCES `Sensore`(`CodSensore`)
         ON DELETE NO ACTION
@@ -248,29 +230,20 @@ ENGINE = InnoDB;
 ---------------------------------
 -- CREATE TABLE Alert
 ---------------------------------
-DROP TABLE IF EXISTS `Alert`;/*
+/* Modificicato da Emanuele il 13.04 alle 16:34 */
 CREATE TABLE `Alert` (
-    `CodAlert` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `Sensore`
+    `Sensore` INT UNSIGNED NOT NULL,
     `TimeStamp` TIMESTAMP NOT NULL,
-    `MisuraMonovalore` TIMESTAMP NULL,
-    `MisuraTrivalore` TIMESTAMP NULL,
-    PRIMARY KEY (`CodAlert`),
-    INDEX `fk_Alert_MisuraMonovalore_idx` (`MisuraMonovalore` ASC),
-    INDEX `fk_Alert_MisuraTrivalore_idx` (`MisuraTrivalore` ASC),
-    CONSTRAINT `fk_Alert_MisuraMonovalore` -- Occhio a sta roba! Non mi convince!
-        FOREIGN KEY (`MisuraMonovalore`) 
-        REFERENCES `MisuraMonovalore`(`TimeStamp`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION,
-    CONSTRAINT `fk_Alert_MisuraTrivalore`
-        FOREIGN KEY (`MisuraTRivalore`) 
-        REFERENCES `MisuraTrivalore`(`TimeStamp`)
+    PRIMARY KEY(`Sensore`, `TimeStamp`),
+    INDEX `fk_Misura_idx` (`Sensore` ASC, `Timestamp` ASC) VISIBLE,
+    CONSTRAINT `fk_Misura`
+        FOREIGN KEY(`Sensore`, `Timestamp`)
+        REFERENCES `Misura`(`Sensore`, `Timestamp`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
 )
 ENGINE = InnoDB;
-*/ 
+
 
 
 ---------------------------------
@@ -457,12 +430,7 @@ CREATE TABLE IF NOT EXISTS `CapoCantiere` (
     `CodFiscale` CHAR(16) NOT NULL,
     `PagaOraria` FLOAT NOT NULL,
     `MaxOperai` INT UNSIGNED NULL,
-    PRIMARY KEY (`CodFiscale`)/*,
-    CONSTRAINT `fk_Turno_CapoCantiere1`
-        FOREIGN KEY (`Lavoro`, `TimestampInizio`, `TimestampFine`)
-        REFERENCES `Turno` (`Lavoro`,`TimestampInizio`, `TimestampFine`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION */
+    PRIMARY KEY (`CodFiscale`)
 )
 ENGINE = InnoDB;
 
@@ -471,13 +439,6 @@ CREATE TABLE IF NOT EXISTS `Lavoratore` (
     `CodFiscale` CHAR(16) NOT NULL,
     `PagaOraria` FLOAT NOT NULL,
     PRIMARY KEY (`CodFiscale`)
-    /*,
-    CONSTRAINT `fk_Turno_Lavoratore1`
-        FOREIGN KEY (`Lavoro`, `TimestampInizio`, `TimestampFine`)
-        REFERENCES `Turno` (`Lavoro`,`TimestampInizio`, `TimestampFine`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION
-    */
 )
 ENGINE = InnoDB;
 
@@ -511,7 +472,8 @@ CREATE TABLE IF NOT EXISTS `Turno` (
 )
 ENGINE = InnoDB;
 
-/* Che è sta roba?
+/* Roba di Ciccio
+
 DROP TABLE IF EXISTS `AcquistoMateriale`;
 CREATE TABLE `AcquistoMateriale` (
     `Lavoro` INT NOT NULL,
