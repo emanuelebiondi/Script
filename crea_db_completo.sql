@@ -1,6 +1,6 @@
 DROP SCHEMA IF EXISTS SmartConstructionCompany;
 CREATE SCHEMA IF NOT EXISTS SmartConstructionCompany DEFAULT CHARACTER SET utf8;
-USE PBCC;
+USE SmartConstructionCompany;
 
 
 ---------------------------------
@@ -19,7 +19,7 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `Edificio`;
 CREATE TABLE `Edificio` (
-    `CodEdificio` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `CodEdificio` INT UNSIGNED AUTO_INCREMENT,
     `Tipologia` VARCHAR(45) NOT NULL,
     `DataRealizzazione` DATE NULL,
     `StatoEdificio` INT UNSIGNED NULL, -- NON è un bool?
