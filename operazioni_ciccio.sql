@@ -6,15 +6,15 @@ delimiter $$
 create procedure stampa_registrazioni_24 (in CodEdificio int)
 begin
     with RegistrazioniEdificio as(
-        select M.Sensore, M.ValoreX, M.ValoreY, M.ValoreZ
-        from Sensore S inner join Misura M on S.CodSensore=M.Sensore
-        where Edificio = _CodEdificio
+        select  M.Sensore, M.ValoreX, M.ValoreY, M.ValoreZ
+        from    Sensore S inner join Misura M on S.CodSensore=M.Sensore
+        where   Edificio = _CodEdificio
             and timestamp >= current_timestamp - interval 1 day
     )
 
-    select *
-    from RegistrazioniEdificio
-    order by Sensore;
+    select  *
+    from    RegistrazioniEdificio
+    order by    Sensore;
     
 end $$
 delimiter ;
@@ -22,7 +22,7 @@ delimiter ;
 --OP.2 Stampa le informazioni della pianta di ogni piano di un edificio
 
 drop procedure if exists info_pianta_edificio
-delimiter   $$
+delimiter $$
 
 create procedure info_pianta_edificio (in _CodEdificio int)
 begin
@@ -50,4 +50,6 @@ delimiter $$
 
 create procedure NuovoMateriale (in _CodLotto int, in _Fornitore VARCHAR(45), in _DataAcquisto DATE, in _Quantita int, in _CostoLotto decimal(10,2), in _Tipologia varchar(45))
 begin
-    insert into 
+    
+end $$
+delimiter ;
