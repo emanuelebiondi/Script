@@ -110,7 +110,7 @@ DROP TABLE IF EXISTS `Vano`;
 CREATE TABLE `Vano` (
     `CodVano` INT NOT NULL ,
     `LarghezzaMax` DECIMAL(4,2)NOT NULL,
-    `LungezzaMax` DECIMAL(4,2) NOT NULL,
+    `LunghezzaMax` DECIMAL(4,2) NOT NULL,
     `AltezzaMax` DECIMAL(4,2) NULL,
     `Piano` INT UNSIGNED NOT NULL,
     `Edificio` INT UNSIGNED NOT NULL,
