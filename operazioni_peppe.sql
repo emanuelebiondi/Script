@@ -62,3 +62,5 @@ CREATE PROCEDURE InfoAlert(IN TimeStamp_f TIMESTAMP, IN CodSensore_f INT, OUT Co
             WHERE TimeStamp = TimeStamp_f
                 AND CodSensore = CodSensore_f
         ) - soglia_g;
+    END $$
+DELIMITER ;
