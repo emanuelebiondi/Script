@@ -43,6 +43,19 @@ begin
 end $$
 delimiter ;
 
+--OP.3 Calcolare il costo di un progetto
+drop procedure if exists calcola_costo_progetto
+delimiter $$
+
+create procedure calcola_costo_progetto (in _CodProgetto int)
+begin
+    select CostoProgetto
+    from Progetto 
+    where CodProgetto = _CodProgetto;
+
+end $$
+delimiter ;
+
 --OP.4 Inserimento nuovo materiale
 
 drop procedure if exists NuovoMateriale
