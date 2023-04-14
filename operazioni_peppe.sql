@@ -1,3 +1,50 @@
+--OP. 5------------------------------------------------
+DROP PROCEDURE IF EXISTS NewTurnoOperaio;
+DELIMITER $$
+
+CREATE PROCEDURE NewTurnoOperaio(IN CodLavoro_f INT, IN Lavoratore_f VARCHAR(16), IN Inizio_f DATETIME(3), IN Fine_f DATETIME(3));
+    BEGIN
+        DECLARE CapoCantiere_f VARCHAR(16);
+        SELECT CapoCantiere INTO CodFiscale FROM CapoCantiere WHERE CodLavoro_f=CodLavoro;
+
+        -- Controllo che il turno non duri troppo poco --
+        DECLARE OreDiLavoro FLOAT;
+        SET OreDiLavoro=(Fine_f-Inizio_f);
+        IF OreDiLavoro <= 0.015 THEN
+            SIGNAL SQLSTATE "45000"
+            SET MESSAGE_TEXT = "Il turno deve durare più di 1 minuto!!";
+        END IF;
+        
+        -- Controllo sovrapposizione turni dell'operaio
+        IF (SELECT COUNT(*) FROM Turno t WHERE t.Lavoratore=Lavoratore_f
+            AND
+            ((t.TimestampInizio >= Inizio_f AND t.TimestampInizio < Inizio_f + INTERVAL OreDiLavoro * 60 MINUTE) OR
+             (t.TimestampInizio + INTERVAL OreDiLavoro*60 MINUTE > Inizio_f AND t.TimestampInizio+ INTERVAL OreDiLavoro*60 MINUTE <= Inizio_f + INTERVAL OreDiLavoro*60 MINUTE)
+            )
+            ) > 0 then
+		    signal sqlstate "45000" 
+            SET MESSAGE_TEXT = "Il turno che si vuole inserire è in conflitto con un'altro turno assegnato all'operaio";
+        end if;
+
+        -- Controllo massimo numero di operai che lavorano contemporaneamente
+        IF (SELECT COUNT(DISTINCT Lavoratore)+1 FROM Turno t WHERE t.Lavoro = CodLavoro_f AND Lavoratore_f != Lavoratore AND 
+    (	(t.TimestampInizio <= Inizio_f AND t.TimestampInizio + INTERVAL OreDiLavoro*60 MINUTE > Inizio_f )
+        OR
+		(t.TimestampInizio > Inizio_f AND t.TimestampInizio < Inizio_f + INTERVAL OreDiLavoro*60 MINUTE )
+    )
+    ) > (SELECT max_operai FROM Lavoro WHERE id_lavoro = _id_lavoro) then
+		SIGNAL SQLSTATE "45000" 
+        SET MESSAGE_TEXT = "E' stato raggiunto il numero massimo di lavoratori che possono lavorare contemporaneamente";
+    END IF;
+    SET Fine_f = Inizio_f+ OreDiLavoro;
+
+    INSERT INTO Turno(Lavoro, Lavoratore, TimestampInizio, TimestampFine)
+    VALUES (CodLavoro_f, Lavoratore_f, Inizio_f, Fine_f);
+
+END $$
+DELIMITER;
+
+
 --OP. 7------------------------------------------------
 DROP PROCEDURE IF EXISTS RischiAnnuiEdificio;
 DELIMITER $$
@@ -18,7 +65,7 @@ CREATE PROCEDURE RischiAnnuiEdificio(IN CodEdificio_f INT UNSIGNED)
 DELIMITER;
 
 
---OP. 9----------------------------------------------
+--OP. 9------------------------------------------------
 DROP PROCEDURE IF EXISTS InfoAlert;
 DELIMITER $$
 
