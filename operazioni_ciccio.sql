@@ -71,3 +71,18 @@ begin
 
 end $$
 delimiter ;
+
+-- OP. 5 Stampa la busta paga relativa ad un operaio specificando anno e mese di interesse
+
+drop procedure if exists calcola_bustapaga
+delimiter $$
+
+create procedure calcola_bustapaga (in _dipendente char(16), in anno int, in mese int)
+begin
+    select count(*) * PagaOraria /12 as BustaPaga
+    from Turno T inner join Lavoratore L on T.Lavoratore = D.CodFiscale
+    where year(T.TimestampInizio) = anno and month(T.TimestampInizio) = mese and L.CodFiscale = _dipendente;
+end $$
+delimiter ;
+                                 
+                                 
