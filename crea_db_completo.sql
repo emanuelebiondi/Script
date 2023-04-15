@@ -1,6 +1,7 @@
-DROP SCHEMA IF EXISTS SmartConstructionCompany;
-CREATE SCHEMA IF NOT EXISTS SmartConstructionCompany DEFAULT CHARACTER SET utf8;
-USE SmartConstructionCompany;
+
+DROP SCHEMA IF EXISTS SmartBuildings;
+CREATE SCHEMA IF NOT EXISTS SmartBuildings DEFAULT CHARACTER SET utf8;
+USE SmartBuildings;
 
 
 ---------------------------------
@@ -19,12 +20,12 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `Edificio`;
 CREATE TABLE `Edificio` (
-    `CodEdificio` INT UNSIGNED AUTO_INCREMENT,
+    `CodEdificio` INT AUTO_INCREMENT,
     `Tipologia` VARCHAR(45) NOT NULL,
     `DataRealizzazione` DATE NULL,
-    `StatoEdificio` INT UNSIGNED NULL, -- NON è un bool?
-    `Latitudine` DECIMAL(9,6) UNSIGNED NOT NULL,
-    `Longitudine` DECIMAL(9,6) UNSIGNED NOT NULL,
+    `StatoEdificio` INT NULL, -- NON è un bool?
+    `Latitudine` DECIMAL(9,6) NOT NULL,
+    `Longitudine` DECIMAL(9,6) NOT NULL,
 	`AreaGeografica` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`CodEdificio`),
     INDEX `fk_Edificio_AreaGeografica_idx` (`AreaGeografica` ASC) VISIBLE,
@@ -42,9 +43,9 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `Rischio`;
 CREATE TABLE `Rischio` (
-    `CodRischio` INT UNSIGNED NOT NULL ,
+    `CodRischio` INT NOT NULL ,
     `Tipo` VARCHAR(255) NOT NULL,
-    `Coefficiente` DECIMAL(2,1) UNSIGNED NOT NULL,
+    `Coefficiente` DECIMAL(2,1) NOT NULL,
     PRIMARY KEY (`CodRischio`)
 )
 ENGINE = InnoDB;
@@ -58,9 +59,9 @@ CREATE TABLE `Calamita` (
 	`AreaGeografica` VARCHAR(45) NOT NULL,
     `Tipologia` VARCHAR(255) NOT NULL,
     `Data` DATE NOT NULL,
-    `LivelloIntensita` DECIMAL(4,1) UNSIGNED NOT NULL,
-    `Longitudine` DECIMAL(9,6) UNSIGNED NOT NULL,
-    `Latitudine` DECIMAL(9,6) UNSIGNED NOT NULL,
+    `LivelloIntensita` DECIMAL(4,1) NOT NULL,
+    `Longitudine` DECIMAL(9,6) NOT NULL,
+    `Latitudine` DECIMAL(9,6) NOT NULL,
     PRIMARY KEY (AreaGeografica, Tipologia, Data, LivelloIntensita),
     INDEX `fk_Calamita_idx`(`AreaGeografica` ASC) VISIBLE,
     CONSTRAINT `fk_Calamita`
@@ -77,10 +78,10 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `Piano`;
 CREATE TABLE `Piano` (
-    `Edificio` INT UNSIGNED NOT NULL,
-    `NumeroPiano` INT UNSIGNED NOT NULL,
-    `Area` DECIMAL(5,2) UNSIGNED NOT NULL,
-    `Perimetro` DECIMAL(5,2) UNSIGNED NOT NULL,
+    `Edificio` INT NOT NULL,
+    `NumeroPiano` INT NOT NULL,
+    `Area` DECIMAL(5,2) NOT NULL,
+    `Perimetro` DECIMAL(5,2) NOT NULL,
     PRIMARY KEY (Edificio, NumeroPiano),
     INDEX `fk_Piano_Edificio_idx` (`Edificio` ASC) VISIBLE,
     CONSTRAINT `fk_Piano_Edificio`
@@ -112,8 +113,8 @@ CREATE TABLE `Vano` (
     `LarghezzaMax` DECIMAL(4,2)NOT NULL,
     `LunghezzaMax` DECIMAL(4,2) NOT NULL,
     `AltezzaMax` DECIMAL(4,2) NULL,
-    `Piano` INT UNSIGNED NOT NULL,
-    `Edificio` INT UNSIGNED NOT NULL,
+    `Piano` INT NOT NULL,
+    `Edificio` INT NOT NULL,
     `Funzione` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`CodVano`),
     INDEX `fk_Vano_Piano_idx` (`Edificio` ASC, `Piano` ASC) VISIBLE,
@@ -137,7 +138,7 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `Muro`;
 CREATE TABLE `Muro` (
-    `CodMuro` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+    `CodMuro` INT NOT NULL AUTO_INCREMENT ,
     `Lunghezza` DECIMAL(4,2) NOT NULL,
     PRIMARY KEY (`CodMuro`)
 )
@@ -149,10 +150,10 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `PuntoAccesso`;
 CREATE TABLE `PuntoAccesso` (
-    `CodPuntoAccesso` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `CodPuntoAccesso` INT NOT NULL AUTO_INCREMENT,
     `PuntoCardinale` VARCHAR(1) NOT NULL,
     `Tipologia` VARCHAR(45) NOT NULL,
-    `Muro` INT UNSIGNED NOT NULL,
+    `Muro` INT NOT NULL,
     PRIMARY KEY (`CodPuntoAccesso`),
     INDEX `fk_PuntoAccesso_Muro_idx` (`Muro` ASC) VISIBLE,
     CONSTRAINT `fk_PuntoAccesso_Muro`
@@ -169,9 +170,9 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `Finestra`;
 CREATE TABLE `Finestra` (
-    `CodFinestra` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `CodFinestra` INT NOT NULL AUTO_INCREMENT,
     `PuntoCardinale` VARCHAR(2) NOT NULL,
-    `Muro` INT UNSIGNED NOT NULL,
+    `Muro` INT NOT NULL,
     PRIMARY KEY (`CodFinestra`),
     INDEX `fk_Finestra_Muro_idx` (`Muro` ASC),
     CONSTRAINT `fk_Finestra_Muro`
@@ -188,12 +189,12 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `Sensore`;
 CREATE TABLE `Sensore`(
-    `CodSensore` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `CodSensore` INT NOT NULL AUTO_INCREMENT,
     `Tipologia` VARCHAR(45) NOT NULL,
-    `Longitudine` DECIMAL(9,6) UNSIGNED NOT NULL,
-    `Latitudine` DECIMAL(9,6) UNSIGNED NOT NULL,
+    `Longitudine` DECIMAL(9,6) NOT NULL,
+    `Latitudine` DECIMAL(9,6) NOT NULL,
     `Soglia` FLOAT NOT NULL,
-    `Muro` INT UNSIGNED NOT NULL,
+    `Muro` INT NOT NULL,
     PRIMARY KEY (`CodSensore`),
     INDEX `fk_Sensore_Muro_idx` (`Muro` ASC) VISIBLE,
     CONSTRAINT `fk_Sensore_Muro`
@@ -211,11 +212,11 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `Misura`;
 CREATE TABLE `Misura`(
-    `Sensore` INT UNSIGNED NOT NULL,
+    `Sensore` INT NOT NULL,
     `TimeStamp` TIMESTAMP NOT NULL,
-    `ValoreX` DECIMAL(5,2) UNSIGNED,
-    `ValoreY` DECIMAL(5,2) UNSIGNED,
-    `ValoreZ` DECIMAL(5,2) UNSIGNED,
+    `ValoreX` DECIMAL(5,2),
+    `ValoreY` DECIMAL(5,2),
+    `ValoreZ` DECIMAL(5,2),
     PRIMARY KEY(`Sensore`, `TimeStamp`),
     INDEX `fk_Misura_Sensore_idx` (`Sensore` ASC) VISIBLE,
     CONSTRAINT `fk_Misura_Sensore`
@@ -230,9 +231,8 @@ ENGINE = InnoDB;
 ---------------------------------
 -- CREATE TABLE Alert
 ---------------------------------
-/* Modificicato da Emanuele il 13.04 alle 16:34 */
 CREATE TABLE `Alert` (
-    `Sensore` INT UNSIGNED NOT NULL,
+    `Sensore` INT NOT NULL,
     `TimeStamp` TIMESTAMP NOT NULL,
     PRIMARY KEY(`Sensore`, `TimeStamp`),
     INDEX `fk_Misura_idx` (`Sensore` ASC, `Timestamp` ASC) VISIBLE,
@@ -252,7 +252,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `Progetto`;
 CREATE TABLE IF NOT EXISTS `Progetto`(
     `CodProgetto` INT NOT NULL PRIMARY KEY,
-    `Edificio` INT UNSIGNED NOT NULL,
+    `Edificio` INT NOT NULL,
     `DataPresentazione` DATE NOT NULL,
     `DataApprovazione`  DATE NOT NULL,
     `DataInizio` DATE NOT NULL,
@@ -273,26 +273,29 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `Materiale`;
 CREATE TABLE `Materiale` (
-    `CodLotto` INT UNSIGNED NOT NULL,
+    `CodLotto` INT NOT NULL,
     `Fornitore` VARCHAR(45) NOT NULL,
     `DataAcquisto` DATE NOT NULL,
-    `Quantita` INT UNSIGNED NOT NULL,
+    `Quantita` INT NOT NULL,
     `CostoLotto` DECIMAL(10,2) NULL NOT NULL,
     `Tipologia` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`CodLotto`,`Fornitore`)
 )
 ENGINE = InnoDB;
 
+---------------------------------
+-- CREATE TABLE Pietra
+---------------------------------
 DROP TABLE IF EXISTS `Pietra`;
 CREATE TABLE `Pietra` (
-    `CodLotto` INT UNSIGNED NOT NULL,
+    `CodLotto` INT NOT NULL,
     `Fornitore` VARCHAR(45) NOT NULL,
     `Tipo` VARCHAR(45) NOT NULL,
-    `SuperficieMedia` FLOAT UNSIGNED NOT NULL,
-    `PesoMedio` FLOAT UNSIGNED NOT NULL,
-    `X` INT UNSIGNED NOT NULL,
-    `Y` INT UNSIGNED NOT NULL,
-    `Z` INT UNSIGNED NOT NULL,
+    `SuperficieMedia` FLOAT NOT NULL,
+    `PesoMedio` FLOAT  NOT NULL,
+    `X` INT NOT NULL,
+    `Y` INT  NOT NULL,
+    `Z` INT NOT NULL,
     PRIMARY KEY (`CodLotto`,`Fornitore`),
     INDEX `fk_Pietra_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
     CONSTRAINT `fk_Pietra_Materiale`
@@ -303,12 +306,16 @@ CREATE TABLE `Pietra` (
 )
 ENGINE = InnoDB;
 
+
+---------------------------------
+-- CREATE TABLE Intonaco
+---------------------------------
 DROP TABLE IF EXISTS `Intonaco`;
 CREATE TABLE `Intonaco` (
-    `CodLotto` INT UNSIGNED NOT NULL,
+    `CodLotto` INT NOT NULL,
     `Fornitore` VARCHAR(45) NOT NULL,
     `Tipo` VARCHAR(45) NOT NULL,
-    `Spessore` FLOAT UNSIGNED NOT NULL,
+    `Spessore` FLOAT NOT NULL,
     PRIMARY KEY (`CodLotto`,`Fornitore`),
     INDEX `fk_Intonaco_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
     CONSTRAINT `fk_Intonaco_Materiale`
@@ -319,9 +326,13 @@ CREATE TABLE `Intonaco` (
 )
 ENGINE = InnoDB;
 
+
+---------------------------------
+-- CREATE TABLE Mattone
+---------------------------------
 DROP TABLE IF EXISTS `Mattone`;
 CREATE TABLE `Mattone` (
-    `CodLotto` INT UNSIGNED NOT NULL,
+    `CodLotto` INT NOT NULL,
     `Fornitore` VARCHAR(45) NOT NULL,
     `Alveolatura` VARCHAR(45) NOT NULL,
     `Composizione` VARCHAR(45) NOT NULL,
@@ -336,16 +347,20 @@ CREATE TABLE `Mattone` (
 )
 ENGINE = InnoDB;
 
+
+---------------------------------
+-- CREATE TABLE Piastrella
+---------------------------------
 DROP TABLE IF EXISTS `Piastrella`;
 CREATE TABLE `Piastrella` (
-    `CodLotto` INT UNSIGNED NOT NULL,
+    `CodLotto` INT NOT NULL,
     `Fornitore` VARCHAR(45) NOT NULL,
     `Tipo` VARCHAR(45) NOT NULL,
-    `Fuga` FLOAT UNSIGNED NOT NULL,
+    `Fuga` FLOAT NOT NULL,
     `Materiale` VARCHAR(45) NOT NULL,
-    `X` INT UNSIGNED NOT NULL,
-    `Y` INT UNSIGNED NOT NULL,
-    `Z` INT UNSIGNED NOT NULL,
+    `X` INT NOT NULL,
+    `Y` INT NOT NULL,
+    `Z` INT NOT NULL,
     PRIMARY KEY (`CodLotto`,`Fornitore`),
     INDEX `fk_Piastrella_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
     CONSTRAINT `fk_Piastrella_Materiale`
@@ -356,15 +371,19 @@ CREATE TABLE `Piastrella` (
 )
 ENGINE = InnoDB;
 
+
+---------------------------------
+-- CREATE TABLE MaterialeGenerico
+---------------------------------
 DROP TABLE IF EXISTS `MaterialeGenerico`;
 CREATE TABLE `MaterialeGenerico` (
-    `CodLotto` INT UNSIGNED NOT NULL,
+    `CodLotto` INT NOT NULL,
     `Fornitore` VARCHAR(45) NOT NULL,
     `Descrizione` VARCHAR(255) NOT NULL,
     `Funzione` VARCHAR(45) NOT NULL,
-    `X` INT UNSIGNED NOT NULL,
-    `Y` INT UNSIGNED NOT NULL,
-    `Z` INT UNSIGNED NOT NULL,
+    `X` INT NOT NULL,
+    `Y` INT NOT NULL,
+    `Z` INT NOT NULL,
     PRIMARY KEY (`CodLotto`,`Fornitore`),
     INDEX `fk_MaterialeGenerico_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
     CONSTRAINT `fk_MaterialeGenerico_Materiale`
@@ -376,6 +395,9 @@ CREATE TABLE `MaterialeGenerico` (
 ENGINE = InnoDB;
 
 
+---------------------------------
+-- CREATE TABLE Responsabile
+---------------------------------
 DROP TABLE IF EXISTS `Responsabile`;
 CREATE TABLE IF NOT EXISTS `Responsabile` (
     `CodFiscale` CHAR(16) NOT NULL,
@@ -384,6 +406,10 @@ CREATE TABLE IF NOT EXISTS `Responsabile` (
 )
 ENGINE = InnoDB;
 
+
+---------------------------------
+-- CREATE TABLE StadioAvanzamentoProgetto
+---------------------------------
 DROP TABLE IF EXISTS `StadioAvanzamentoProgetto`;
 CREATE TABLE IF NOT EXISTS `StadioAvanzamentoProgetto`(
     `CodStadio` INT NOT NULL AUTO_INCREMENT,
@@ -406,6 +432,10 @@ CREATE TABLE IF NOT EXISTS `StadioAvanzamentoProgetto`(
 )
 ENGINE = InnoDB;
 
+
+---------------------------------
+-- CREATE TABLE Lavoro
+---------------------------------
 DROP TABLE IF EXISTS `Lavoro`;
 CREATE TABLE IF NOT EXISTS `Lavoro` (
     `CodLavoro` INT NOT NULL AUTO_INCREMENT,
@@ -413,7 +443,7 @@ CREATE TABLE IF NOT EXISTS `Lavoro` (
     `DataInizio` DATE NULL,
     `DataFine` DATE NULL,
     `Descrizione` VARCHAR(255) NOT NULL,
-    `MaxOperai` INT UNSIGNED NULL,
+    `MaxOperai` INT NULL,
     PRIMARY KEY (`CodLavoro`),
     INDEX `fk_StadioAvanzamentoProgetto_Lavoro_idx` (`Stadio` ASC) VISIBLE,
     CONSTRAINT `fk_StadioAvanzamentoProgetto_Lavoro`
@@ -425,15 +455,22 @@ CREATE TABLE IF NOT EXISTS `Lavoro` (
 ENGINE = InnoDB;
 
 
+---------------------------------
+-- CREATE TABLE Capocantiere
+---------------------------------
 DROP TABLE IF EXISTS `CapoCantiere`;
 CREATE TABLE IF NOT EXISTS `CapoCantiere` (
     `CodFiscale` CHAR(16) NOT NULL,
     `PagaOraria` FLOAT NOT NULL,
-    `MaxOperai` INT UNSIGNED NULL,
+    `MaxOperai` INT NULL,
     PRIMARY KEY (`CodFiscale`)
 )
 ENGINE = InnoDB;
 
+
+---------------------------------
+-- CREATE TABLE Lavoratore
+---------------------------------
 DROP TABLE IF EXISTS `Lavoratore`;
 CREATE TABLE IF NOT EXISTS `Lavoratore` (
     `CodFiscale` CHAR(16) NOT NULL,
@@ -443,6 +480,9 @@ CREATE TABLE IF NOT EXISTS `Lavoratore` (
 ENGINE = InnoDB;
 
 
+---------------------------------
+-- CREATE TABLE Turno
+---------------------------------
 DROP TABLE IF EXISTS `Turno`;
 CREATE TABLE IF NOT EXISTS `Turno` (
     `TimestampInizio` DATETIME(3) NOT NULL,
@@ -471,21 +511,3 @@ CREATE TABLE IF NOT EXISTS `Turno` (
         ON UPDATE NO ACTION
 )
 ENGINE = InnoDB;
-
-/* Roba di Ciccio
-
-DROP TABLE IF EXISTS `AcquistoMateriale`;
-CREATE TABLE `AcquistoMateriale` (
-    `Lavoro` INT NOT NULL,
-    `Materiale` INT UNSIGNED NOT NULL,
-    PRIMARY KEY (`Lavoro`, `Materiale`),
-    INDEX `fk_Materiale_has_Lavoro_Lavoro1_idx` (`Lavoro` ASC) VISIBLE,
-    INDEX `fk_Materiale_has_Lavoro_Materiale1_idx` (`Materiale` ASC) VISIBLE,
-    CONSTRAINT `fk_Materiale_has_Lavoro_Lavoro1`
-        FOREIGN KEY (`Lavoro`)
-        REFERENCES `Materiale` (`CodLotto`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION
-)
-ENGINE = InnoDB;
-*/
