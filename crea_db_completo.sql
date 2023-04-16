@@ -141,7 +141,14 @@ DROP TABLE IF EXISTS `Muro`;
 CREATE TABLE `Muro` (
     `CodMuro` INT NOT NULL AUTO_INCREMENT ,
     `Lunghezza` DECIMAL(4,2) NOT NULL,
-    PRIMARY KEY (`CodMuro`)
+    `Vano` INT NOT NULL,
+    PRIMARY KEY (`CodMuro`),
+    INDEX `fk_Muro_Vano_idx` (`Vano` ASC) VISIBLE,
+    CONSTRAINT `fk_Muro_Vano`
+        FOREIGN KEY (`Vano`) 
+        REFERENCES `Vano` (`CodVano`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
 )
 ENGINE = InnoDB;
 
