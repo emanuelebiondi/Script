@@ -19,10 +19,23 @@ CREATE PROCEDURE ConsigliIntervento(IN CodEdificio_f INT)
             FROM Piano
             WHERE Edificio = CodEdificio_f
         );
-        WITH VaniScelti AS(
-            SELECT
-            FROM Piano p INNER JOIN Vano v 
+        WITH MuriScelti AS(
+            SELECT m.CodMuro
+            FROM Vano v INNER JOIN Muro m ON m.Piano = v.Piano
+            WHERE v.Edificio = CodEdificio_f
+        ),
+        SensoriAllarmati AS(
+            SELECT s.CodSensore, s.Muro, s.Tipologia, s.Soglia s.Longitudine, s.Latitudine, a.TimeStamp
+            FROM Sensore s INNER JOIN Alert a ON s.CodSensore = a.Sensore
+            WHERE (
+                s.Tipologia = "Giroscopio" OR
+                s.Tipologia = "Accellerometro" OR
+                s.Tipologia = "Allungamento"
+            )
+        ),
+        AlertInteressati AS(
+            SELECT sm.CodSensore, sm.Tipologia, sm.Soglia, sm.Longitudine, sm.Latitudine, sm.TimeStamp
+            FROM MuriScelti ms INNER JOIN SensoriAllarmati sa ON sa.Muro = ms.CodMuro
         )
-    END $$
+    END $$
 DELIMITER;
-
