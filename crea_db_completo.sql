@@ -4,6 +4,7 @@ CREATE SCHEMA IF NOT EXISTS SmartBuildings DEFAULT CHARACTER SET utf8;
 USE SmartBuildings;
 
 
+
 ---------------------------------
 -- CREATE TABLE AreaGeografica 
 ---------------------------------
