@@ -29,7 +29,7 @@ CREATE TABLE `Edificio` (
 	`AreaGeografica` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`CodEdificio`),
     INDEX `fk_Edificio_AreaGeografica_idx` (`AreaGeografica` ASC) VISIBLE,
-    CONSTRAINT chk_coords CHECK (Latitudine between -90 and 90 and Longitudine between -180 and 180),
+    CONSTRAINT chk_coordsEdificio CHECK (Latitudine between -90 and 90 and Longitudine between -180 and 180),
     CONSTRAINT chk_status CHECK (StatoEdificio between 1 and 3),
     CONSTRAINT `fk_Edificio_AreaGeografica`
         FOREIGN KEY (`AreaGeografica`) REFERENCES `AreaGeografica` (`Nome`)
@@ -44,12 +44,12 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `Rischio`;
 CREATE TABLE `Rischio` (
-    `CodRischio` INT NOT NULL ,
-    `Tipo` VARCHAR(255) NOT NULL,
-    `Coefficiente` DECIMAL(2,1) NOT NULL,
     `AreaGeografica` VARCHAR(45) NOT NULL,
-    PRIMARY KEY (`CodRischio`)
-    INDEX `fk_Rischio_AreaGeografica_idx` (`AreaGeografica` ASC) VISIBLE,
+    `Tipo` VARCHAR(255) NOT NULL,
+    `Coefficiente` TINYINT NOT NULL,
+    PRIMARY KEY (`AreaGeografica`, `Tipo`),
+    INDEX `fk_Rischio_AreaGeografica_idx` (`AreaGeografica` ASC),
+    CONSTRAINT chk_risk CHECK (`Coefficiente` between 1 and 10),
     CONSTRAINT `fk_Rischio_AreaGeografica`
         FOREIGN KEY (`AreaGeografica`) REFERENCES `AreaGeografica` (`Nome`)
         ON DELETE NO ACTION
@@ -59,18 +59,20 @@ ENGINE = InnoDB;
 
 
 ---------------------------------
--- CREATE TABLE Calamità
+-- CREATE TABLE Calamita
 ---------------------------------
 DROP TABLE IF EXISTS `Calamita`;
 CREATE TABLE `Calamita` (
 	`AreaGeografica` VARCHAR(45) NOT NULL,
     `Tipologia` VARCHAR(255) NOT NULL,
     `Data` DATE NOT NULL,
-    `LivelloIntensita` DECIMAL(4,1) NOT NULL,
+    `LivelloIntensita` TINYINT NOT NULL,
     `Longitudine` DECIMAL(9,6) NOT NULL,
     `Latitudine` DECIMAL(9,6) NOT NULL,
     PRIMARY KEY (AreaGeografica, Tipologia, Data, LivelloIntensita),
     INDEX `fk_Calamita_idx`(`AreaGeografica` ASC) VISIBLE,
+    CONSTRAINT chk_coordsCalamita CHECK (Latitudine between -90 and 90 and Longitudine between -180 and 180),
+    CONSTRAINT chk_level CHECK (`LivelloIntensita` between 1 and 10),
     CONSTRAINT `fk_Calamita`
         FOREIGN KEY (`AreaGeografica`) 
         REFERENCES `AreaGeografica` (`Nome`)
@@ -211,6 +213,7 @@ CREATE TABLE `Sensore`(
     `Muro` INT NOT NULL,
     PRIMARY KEY (`CodSensore`),
     INDEX `fk_Sensore_Muro_idx` (`Muro` ASC) VISIBLE,
+    CONSTRAINT chk_coords CHECK (Latitudine between -90 and 90 and Longitudine between -180 and 180),
     CONSTRAINT `fk_Sensore_Muro`
         FOREIGN KEY (`Muro`) 
         REFERENCES `Muro`(`CodMuro`)
