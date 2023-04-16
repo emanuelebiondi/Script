@@ -23,13 +23,14 @@ CREATE TABLE `Edificio` (
     `CodEdificio` INT AUTO_INCREMENT,
     `Tipologia` VARCHAR(45) NOT NULL,
     `DataRealizzazione` DATE NULL,
-    `StatoEdificio` INT NULL, -- NON è un bool?
+    `StatoEdificio` TINYINT, 
     `Latitudine` DECIMAL(9,6) NOT NULL,
     `Longitudine` DECIMAL(9,6) NOT NULL,
 	`AreaGeografica` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`CodEdificio`),
     INDEX `fk_Edificio_AreaGeografica_idx` (`AreaGeografica` ASC) VISIBLE,
     CONSTRAINT chk_coords CHECK (Latitudine between -90 and 90 and Longitudine between -180 and 180),
+    CONSTRAINT chk_status CHECK (StatoEdificio between 1 and 3),
     CONSTRAINT `fk_Edificio_AreaGeografica`
         FOREIGN KEY (`AreaGeografica`) REFERENCES `AreaGeografica` (`Nome`)
         ON DELETE NO ACTION
