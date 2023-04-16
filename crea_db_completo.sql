@@ -23,7 +23,7 @@ CREATE TABLE `Edificio` (
     `CodEdificio` INT AUTO_INCREMENT,
     `Tipologia` VARCHAR(45) NOT NULL,
     `DataRealizzazione` DATE NULL,
-    `StatoEdificio` TINYINT, 
+    `StatoEdificio` TINYINT NOT NULL, 
     `Latitudine` DECIMAL(9,6) NOT NULL,
     `Longitudine` DECIMAL(9,6) NOT NULL,
 	`AreaGeografica` VARCHAR(45) NOT NULL,
