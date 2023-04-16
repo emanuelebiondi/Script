@@ -72,7 +72,7 @@ values
 ----------------------------------
 insert into Piano (Edificio, NumeroPiano, Perimetro, Area)
 values 
-	(1, 1, )
+	(1, 1, 62.4, 12418.56);
 
 
 

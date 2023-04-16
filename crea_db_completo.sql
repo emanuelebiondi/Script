@@ -89,8 +89,8 @@ DROP TABLE IF EXISTS `Piano`;
 CREATE TABLE `Piano` (
     `Edificio` INT NOT NULL,
     `NumeroPiano` INT NOT NULL,
-    `Area` DECIMAL(5,2) NOT NULL,
-    `Perimetro` DECIMAL(5,2) NOT NULL,
+    `Area` FLOAT NOT NULL,
+    `Perimetro` FLOAT NOT NULL,
     PRIMARY KEY (Edificio, NumeroPiano),
     INDEX `fk_Piano_Edificio_idx` (`Edificio` ASC) VISIBLE,
     CONSTRAINT `fk_Piano_Edificio`
