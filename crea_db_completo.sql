@@ -119,7 +119,7 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `Vano`;
 CREATE TABLE `Vano` (
-    `CodVano` INT NOT NULL ,
+    `CodVano` INT NOT NULL AUTO_INCREMENT,
     `LarghezzaMax` DECIMAL(4,2)NOT NULL,
     `LunghezzaMax` DECIMAL(4,2) NOT NULL,
     `AltezzaMax` DECIMAL(4,2) NULL,

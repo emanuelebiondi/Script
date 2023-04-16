@@ -96,7 +96,12 @@ values
 ----------------------------------
 insert into Vano (Edificio, Piano, Altezzamax, LunghezzaMax, LarghezzaMax, Funzione)
 values 
-	(1, 1, , , ); -- 1.1.1
+	(1, 1, 2.7, 11, 10, 'SalaDaPranzo'), -- 1.1.1
+	(1, 1, 2.7, 7, 4, 'Cucina'), -- 1.1.2
+	(1, 1, 2.7, 4, 6, 'Bagno'), -- 1.1.3
+	(1, 1, 2.7, 13, 3, 'Ingresso'), -- 1.1.4
+	(1, 1, 2.7, 4, 7, 'CenraDaLetto'), -- 1.1.5
+	(1, 1, 2.7, 4, 7, 'CenraDaLetto'); -- 1.1.6
 
 
 
