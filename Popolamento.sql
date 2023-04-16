@@ -72,7 +72,7 @@ values
 ----------------------------------
 insert into Piano (Edificio, NumeroPiano, Perimetro, Area)
 values 
-	(1, 1, 62.4, 12418.56);
+	(1, 1, 68, 253); -- 1
 
 ----------------------------------
 -- Insert Funzione (del Vano)
@@ -96,7 +96,7 @@ values
 ----------------------------------
 insert into Vano (Edificio, Piano, Altezzamax, LunghezzaMax, LarghezzaMax, Funzione)
 values 
-	(1,1, 3.18, 4.08, );
+	(1, 1, , , ); -- 1.1.1
 
 
 
