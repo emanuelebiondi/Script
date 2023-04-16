@@ -43,13 +43,14 @@ CREATE TRIGGER check_tipologia_calamita
 BEFORE INSERT ON Calamita
 FOR EACH ROW
 BEGIN
-    IF  NEW.Tipologia <> 'Sismico' AND NEW.Tipologia <> 'Idrogeologico'
+    IF  NEW.Tipologia <> 'Sismico' AND NEW.Tipologia <> 'Idrogeologico' AND NEW.Tipologia <> 'Meteo'
     THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Tipologia di Calamita non valida!';
     END IF;
 END $$
 DELIMITER;
+
 
 /* Vincolo Sensore.Tipologia */
 DELIMITER $$
