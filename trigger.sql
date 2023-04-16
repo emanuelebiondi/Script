@@ -93,7 +93,7 @@ create function calcolo_costo_lavoro(_CodLavoro int) returns decimal(10,2) reads
 begin
 	declare costo_impiego, costo_materiale,costo_responsabile, costo_capocantiere decimal(10,2) default 0;
 
-	select sum(L.PagaOraria * (TIMESTAMPDIFF(8, T.TimestampInizio, T.TimestampFine))) --Calcola la somma della paga di operaio conteggiando le ore di lavoro svolte
+	select sum(L.PagaOraria * (TIMESTAMPDIFF(HOUR, T.TimestampInizio, T.TimestampFine))) --Calcola la somma della paga di operaio conteggiando le ore di lavoro svolte
     into costo_impiego
 	from Turno T inner join Lavoratore L on T.operaio = L.CodFiscale
 	where T.Lavoro = _CodLavoro;
@@ -103,7 +103,7 @@ begin
 	from AcquistoMateriale A inner join Materiale M on A.Materiale = M.CodiceLotto
 	where A.Lavoro = _CodLavoro;
     
-    select sum(C.PagaOraria * (TIMESTAMPDIFF(8,T.TimestampInizio, T.TimestampFine)))
+    select sum(C.PagaOraria * (TIMESTAMPDIFF(HOUR,T.TimestampInizio, T.TimestampFine)))
     into costo_capocantiere
     from Turno T inner join CapoCantiere C on T.CapoCantiere = C.CodFiscale
     where T.Lavoro =_CodLavoro;
