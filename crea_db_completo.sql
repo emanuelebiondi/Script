@@ -46,10 +46,8 @@ DROP TABLE IF EXISTS `Rischio`;
 CREATE TABLE `Rischio` (
     `CodRischio` INT NOT NULL ,
     `Tipo` VARCHAR(255) NOT NULL,
-    `Coefficiente` DECIMAL(2,1) NOT NULL,
-    `AreaGeografica` VARCHAR(45) NOT NULL,
-    `Tipo` VARCHAR(255) NOT NULL,
     `Coefficiente` TINYINT NOT NULL,
+    `AreaGeografica` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`AreaGeografica`, `Tipo`),
     INDEX `fk_Rischio_AreaGeografica_idx` (`AreaGeografica` ASC),
     CONSTRAINT chk_risk CHECK (`Coefficiente` between 1 and 10),
