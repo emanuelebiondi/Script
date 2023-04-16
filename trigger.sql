@@ -1,3 +1,5 @@
+
+/* Vincolo PuntoAccesso.PuntoCardinale */
 DELIMITER $$
 DROP TRIGGER IF EXISTS check_puntocardinale_puntoaccesso
 CREATE TRIGGER check_puntocardinale_puntoaccesso
@@ -15,6 +17,7 @@ BEGIN
 END $$
 DELIMITER ;
 
+/* Vincolo Finestra.PuntoCardinale */
 DELIMITER $$
 DROP TRIGGER IF EXISTS check_puntocardinale_finestra;
 CREATE TRIGGER check_puntocardinale_finestra
@@ -32,27 +35,30 @@ BEGIN
 END $$
 DELIMITER ;
 
+
+/* Vincolo Calamita.Tipologia */
 DELIMITER $$
-DROP TRIGGER IF EXISTS check_tipologia_puntoaccesso;
-CREATE TRIGGER check_tipologia_puntoaccesso
-BEFORE INSERT ON PuntoAccesso
+DROP TRIGGER IF EXISTS check_tipologia_calamita;
+CREATE TRIGGER check_tipologia_calamita
+BEFORE INSERT ON Calamita
 FOR EACH ROW
 BEGIN
-    IF  NEW.Tipologia <> 'Porta' AND NEW.Tipologia <> 'Arco' AND NEW.Tipologia <> 'AccessoSenzaSerramento' AND NEW.Tipologia <> 'Portafinestra'
+    IF  NEW.Tipologia <> 'Sismico' AND NEW.Tipologia <> 'Idrogeologico'
     THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Tipologia di punto di accesso non valida!';
+        SET MESSAGE_TEXT = 'Tipologia di Calamita non valida!';
     END IF;
 END $$
 DELIMITER;
 
+/* Vincolo Sensore.Tipologia */
 DELIMITER $$
 DROP TRIGGER IF EXISTS check_tipologia_sensore;
 CREATE TRIGGER check_tipologia_sensore
 BEFORE INSERT ON Sensore
 FOR EACH ROW
 BEGIN 
-    IF  NEW.Tipologia <> 'Giroscopio' AND NEW.Tipologia <> 'Temperatura' AND NEW.Tipologia <> 'Allungamento' AND NEW.Tipologia <> 'Pluviometro' AND NEW.Tipologia <> 'Accelerometro' /*AND NEW.Tipologia <> 'Sismico' */
+    IF  NEW.Tipologia <> 'Giroscopio' AND NEW.Tipologia <> 'Temperatura' AND NEW.Tipologia <> 'Allungamento' AND NEW.Tipologia <> 'Pluviometro' AND NEW.Tipologia <> 'Accelerometro'
     THEN 
     THEN 
         SIGNAL SQLSTATE '45000'
@@ -60,6 +66,7 @@ BEGIN
     END IF;
 END $$
 DELIMITER;
+
 
 drop trigger if exists check_piano;
 delimiter $$
