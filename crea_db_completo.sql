@@ -20,7 +20,7 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `Edificio`;
 CREATE TABLE `Edificio` (
-    `CodEdificio` INT AUTO_INCREMENT,
+    `CodEdificio` INT NOT NULL AUTO_INCREMENT,
     `Tipologia` VARCHAR(45) NOT NULL,
     `DataRealizzazione` DATE NULL,
     `StatoEdificio` TINYINT NOT NULL, 
@@ -301,9 +301,9 @@ CREATE TABLE `Pietra` (
     `Tipo` VARCHAR(45) NOT NULL,
     `SuperficieMedia` FLOAT NOT NULL,
     `PesoMedio` FLOAT  NOT NULL,
-    `X` INT NOT NULL,
-    `Y` INT  NOT NULL,
-    `Z` INT NOT NULL,
+    `X` FLOAT NOT NULL,
+    `Y` FLOAT  NOT NULL,
+    `Z` FLOAT NOT NULL,
     PRIMARY KEY (`CodLotto`,`Fornitore`),
     INDEX `fk_Pietra_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
     CONSTRAINT `fk_Pietra_Materiale`
@@ -344,7 +344,7 @@ CREATE TABLE `Mattone` (
     `Fornitore` VARCHAR(45) NOT NULL,
     `Alveolatura` VARCHAR(45) NOT NULL,
     `Composizione` VARCHAR(45) NOT NULL,
-    `Isolante` VARCHAR(45) NOT NULL,
+    `Isolante` BOOLEAN NOT NULL,
     PRIMARY KEY (`CodLotto`,`Fornitore`),
     INDEX `fk_Mattone_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
     CONSTRAINT `fk_Mattone_Materiale`
@@ -366,9 +366,9 @@ CREATE TABLE `Piastrella` (
     `Tipo` VARCHAR(45) NOT NULL,
     `Fuga` FLOAT NOT NULL,
     `Materiale` VARCHAR(45) NOT NULL,
-    `X` INT NOT NULL,
-    `Y` INT NOT NULL,
-    `Z` INT NOT NULL,
+    `X` FLOAT NOT NULL,
+    `Y` FLOAT NOT NULL,
+    `Z` FLOAT NOT NULL,
     PRIMARY KEY (`CodLotto`,`Fornitore`),
     INDEX `fk_Piastrella_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
     CONSTRAINT `fk_Piastrella_Materiale`
@@ -389,9 +389,9 @@ CREATE TABLE `MaterialeGenerico` (
     `Fornitore` VARCHAR(45) NOT NULL,
     `Descrizione` VARCHAR(255) NOT NULL,
     `Funzione` VARCHAR(45) NOT NULL,
-    `X` INT NOT NULL,
-    `Y` INT NOT NULL,
-    `Z` INT NOT NULL,
+    `X` FLOAT NOT NULL,
+    `Y` FLOAT NOT NULL,
+    `Z` FLOAT NOT NULL,
     PRIMARY KEY (`CodLotto`,`Fornitore`),
     INDEX `fk_MaterialeGenerico_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
     CONSTRAINT `fk_MaterialeGenerico_Materiale`
@@ -499,7 +499,7 @@ CREATE TABLE IF NOT EXISTS `Turno` (
     `CapoCantiere` CHAR(16) NOT NULL,
     `Lavoratore` CHAR(16) NOT NULL,
     PRIMARY KEY (`TimestampInizio`, `TimestampFine`, `Lavoro`),
-    INDEX `fk_Lavoro_Turno1+_idx` (`Lavoro` ASC ) VISIBLE,
+    INDEX `fk_Turno_Lavoro_idx` (`Lavoro` ASC ) VISIBLE,
     INDEX `fk_CapoCantiere_Turno_idx` (`CapoCantiere` ASC) VISIBLE,
     INDEX `fk_Lavoratore_Turno_idx` (`Lavoratore` ASC) VISIBLE,
     CONSTRAINT `fk_Lavoro_Turno`

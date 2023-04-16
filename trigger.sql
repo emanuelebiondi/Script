@@ -38,7 +38,7 @@ CREATE TRIGGER check_tipologia_puntoaccesso
 BEFORE INSERT ON PuntoAccesso
 FOR EACH ROW
 BEGIN
-    IF  NEW.Tipologia <> 'Porta' AND NEW.Tipologia <> 'Arco' AND NEW.Tipologia <> 'Accesso Senza Serramento' AND NEW.Tipologia <> 'Portafinestra'
+    IF  NEW.Tipologia <> 'Porta' AND NEW.Tipologia <> 'Arco' AND NEW.Tipologia <> 'AccessoSenzaSerramento' AND NEW.Tipologia <> 'Portafinestra'
     THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Tipologia di punto di accesso non valida!';
@@ -52,7 +52,8 @@ CREATE TRIGGER check_tipologia_sensore
 BEFORE INSERT ON Sensore
 FOR EACH ROW
 BEGIN 
-    IF  NEW.Tipologia <> 'Giroscopio' AND NEW.Tipologia <> 'Temperatura' AND NEW.Tipologia <> 'Allungamento' AND NEW.Tipologia <> 'Pluviometro' AND NEW.Tipologia <> 'Accelerometro'
+    IF  NEW.Tipologia <> 'Giroscopio' AND NEW.Tipologia <> 'Temperatura' AND NEW.Tipologia <> 'Allungamento' AND NEW.Tipologia <> 'Pluviometro' AND NEW.Tipologia <> 'Accelerometro' /*AND NEW.Tipologia <> 'Sismico' */
+    THEN 
     THEN 
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Tipologia di sensore non valida!';
