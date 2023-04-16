@@ -47,7 +47,13 @@ CREATE TABLE `Rischio` (
     `CodRischio` INT NOT NULL ,
     `Tipo` VARCHAR(255) NOT NULL,
     `Coefficiente` DECIMAL(2,1) NOT NULL,
+    `AreaGeografica` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`CodRischio`)
+    INDEX `fk_Rischio_AreaGeografica_idx` (`AreaGeografica` ASC) VISIBLE,
+    CONSTRAINT `fk_Rischio_AreaGeografica`
+        FOREIGN KEY (`AreaGeografica`) REFERENCES `AreaGeografica` (`Nome`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
 )
 ENGINE = InnoDB;
 
