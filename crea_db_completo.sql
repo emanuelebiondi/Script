@@ -45,7 +45,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `Rischio`;
 CREATE TABLE `Rischio` (
     `CodRischio` INT NOT NULL ,
-    `Tipo` VARCHAR(255) NOT NULL,
+    `Tipo` VARCHAR(45) NOT NULL,
     `Coefficiente` TINYINT NOT NULL,
     `AreaGeografica` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`AreaGeografica`, `Tipo`),
