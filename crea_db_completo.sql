@@ -44,6 +44,9 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `Rischio`;
 CREATE TABLE `Rischio` (
+    `CodRischio` INT NOT NULL ,
+    `Tipo` VARCHAR(255) NOT NULL,
+    `Coefficiente` DECIMAL(2,1) NOT NULL,
     `AreaGeografica` VARCHAR(45) NOT NULL,
     `Tipo` VARCHAR(255) NOT NULL,
     `Coefficiente` TINYINT NOT NULL,
@@ -64,7 +67,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `Calamita`;
 CREATE TABLE `Calamita` (
 	`AreaGeografica` VARCHAR(45) NOT NULL,
-    `Tipologia` VARCHAR(255) NOT NULL,
+    `Tipologia` VARCHAR(45) NOT NULL,
     `Data` DATE NOT NULL,
     `LivelloIntensita` TINYINT NOT NULL,
     `Longitudine` DECIMAL(9,6) NOT NULL,
