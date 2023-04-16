@@ -20,7 +20,7 @@ CREATE PROCEDURE ConsigliIntervento(IN CodEdificio_f INT)
             WHERE Edificio = CodEdificio_f
         );
         WITH MuriScelti AS(
-            SELECT m.CodMuro
+            SELECT m.CodMuro, m.Piano
             FROM Vano v INNER JOIN Muro m ON m.Piano = v.Piano
             WHERE v.Edificio = CodEdificio_f
         ),
@@ -34,7 +34,7 @@ CREATE PROCEDURE ConsigliIntervento(IN CodEdificio_f INT)
             )
         ),
         AlertInteressati AS(
-            SELECT sm.CodSensore, sm.Tipologia, sm.Soglia, sm.Longitudine, sm.Latitudine, sm.TimeStamp, sm.ValoreSuperamento
+            SELECT ms.CodSensore, ms.Piano, ms.Tipologia, ms.Soglia, ms.Longitudine, ms.Latitudine, ms.TimeStamp, ms.ValoreSuperamento
             FROM MuriScelti ms INNER JOIN SensoriAllarmati sa ON sa.Muro = ms.CodMuro
         ),
         AlertRecenti AS(
@@ -48,6 +48,23 @@ CREATE PROCEDURE ConsigliIntervento(IN CodEdificio_f INT)
                 WHERE at1.CodSensore = at.CodSensore
             )
         )
-        
+        SELECT ar.Piano, (
+            IF ((ar.Tipologia = "Giroscopio"
+             OR ar.Tipologia = "Accelerometro"
+             ) AND ar.Piano < ContaPiani, CONCAT("Consigliata ristrutturazione del solaio del piano",ar.Piano),
+            IF ((ar.Tipologia = "Giroscopio"
+             OR ar.Tipologia = "Accelerometro") 
+             AND ar.Piano = ContaPiani, CONCAT("Consigliata ristrutturazione tetto"
+             , CONCAT("Ristrutturazione muro", ar.CodMuro)))
+            ) AS Suggerimento,(
+                IF (ar.DannoPerc BETWEEN 1 AND 20, "120 giorni",
+                IF (ar.DannoPerc BETWEEN 1 AND 20, "90 giorni",
+                IF (ar.DannoPerc BETWEEN 1 AND 20, "60 giorni",
+                IF (ar.DannoPerc BETWEEN 1 AND 20, "30 giorni",
+                IF (ar.DannoPerc BETWEEN 1 AND 20, "10 giorni",
+                "Iniziare i lavori il prima possibile")))))
+                ) AS TemporisticaInterventi
+            )
+            FROM AlertRecenti ar;
     END $$
 DELIMITER;
