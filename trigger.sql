@@ -1,3 +1,5 @@
+
+/* Vincolo PuntoAccesso.PuntoCardinale */
 DELIMITER $$
 DROP TRIGGER IF EXISTS check_puntocardinale_puntoaccesso
 CREATE TRIGGER check_puntocardinale_puntoaccesso
@@ -15,6 +17,7 @@ BEGIN
 END $$
 DELIMITER ;
 
+/* Vincolo Finestra.PuntoCardinale */
 DELIMITER $$
 DROP TRIGGER IF EXISTS check_puntocardinale_finestra;
 CREATE TRIGGER check_puntocardinale_finestra
@@ -32,20 +35,23 @@ BEGIN
 END $$
 DELIMITER ;
 
+
+/* Vincolo Calamita.Tipologia */
 DELIMITER $$
-DROP TRIGGER IF EXISTS check_tipologia_puntoaccesso;
-CREATE TRIGGER check_tipologia_puntoaccesso
-BEFORE INSERT ON PuntoAccesso
+DROP TRIGGER IF EXISTS check_tipologia_calamita;
+CREATE TRIGGER check_tipologia_calamita
+BEFORE INSERT ON Calamita
 FOR EACH ROW
 BEGIN
-    IF  NEW.Tipologia <> 'Porta' AND NEW.Tipologia <> 'Arco' AND NEW.Tipologia <> 'Accesso Senza Serramento' AND NEW.Tipologia <> 'Portafinestra'
+    IF  NEW.Tipologia <> 'Sismico' AND NEW.Tipologia <> 'Idrogeologico'
     THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Tipologia di punto di accesso non valida!';
+        SET MESSAGE_TEXT = 'Tipologia di Calamita non valida!';
     END IF;
 END $$
 DELIMITER;
 
+/* Vincolo Sensore.Tipologia */
 DELIMITER $$
 DROP TRIGGER IF EXISTS check_tipologia_sensore;
 CREATE TRIGGER check_tipologia_sensore
@@ -54,12 +60,14 @@ FOR EACH ROW
 BEGIN 
     IF  NEW.Tipologia <> 'Giroscopio' AND NEW.Tipologia <> 'Temperatura' AND NEW.Tipologia <> 'Allungamento' AND NEW.Tipologia <> 'Pluviometro' AND NEW.Tipologia <> 'Accelerometro'
     THEN 
+    THEN 
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Tipologia di sensore non valida!';
     END IF;
 END $$
 DELIMITER;
 
+/* Controllo sul piano del edificio */
 drop trigger if exists check_piano;
 delimiter $$
 create trigger check_piano before insert on Piano for each row
@@ -77,7 +85,7 @@ begin
 end $$
 delimiter ;
 
-
+/* Costo del lavoro */
 drop function if exists calcolo_costo_lavoro;
 delimiter $$
 create function calcolo_costo_lavoro(_CodLavoro int) returns decimal(10,2) reads sql data
@@ -121,7 +129,7 @@ begin
 end $$
 delimiter ;
 
--- L'ora di inizio e fine di un turno di un lavoratore non sono coerenti
+/* L'ora di inizio e fine di un turno di un lavoratore non sono coerenti */
 drop trigger if exists check_orario_turno_lavoratore
 delimiter $$
 create trigger check_orario_turno_lavoratore
@@ -134,7 +142,7 @@ begin
 end $$
 delimiter ;
 
--- Controlla che non venga inserito un turno con stesso lavoratore che si sovrappone ad un suo turno preesistente
+/* Controlla che non venga inserito un turno con stesso lavoratore che si sovrappone ad un suo turno preesistente */
 drop trigger if exists check_sovrapposizione_turno_lavoratore
 delimiter $$
 
@@ -152,7 +160,7 @@ begin
 end $$
 delimiter ;
 
--- Controlla la coerenza delle date dentro Progetto
+/* Controlla la coerenza delle date dentro Progetto */
 drop trigger if exists check_data_stadioavanzamentoprogetto
 delimiter $$
 
@@ -169,7 +177,7 @@ begin
 end $$
 delimiter ;
 
-
+/* Massimo numero di lavoratori */
 drop trigger if exists check_maxlavoratori
 delimiter $$
 
