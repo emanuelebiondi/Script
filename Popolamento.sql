@@ -103,12 +103,17 @@ values
 	(1, 1, 2.7, 4, 7, 'CameraDaLetto'), -- 1.1.5
 	(1, 1, 2.7, 4, 7, 'CameraDaLetto'); -- 1.1.6
 
-insert into Muro (Vano, Lunghezza)
+insert into Muro (Lunghezza, Vano1, Vano2)
 values 
-	(1, 11),
-	(2, 10),
-	(3, 4),
-	()
+	(11, 1, null), -- 1.1.1.1
+	(10, 1, null), -- 1.1.1.2
+	(3, 1, 2), -- 1.1.1.3
+	(4, 1, 4), -- 1.1.1.4
+	(5, 1, 5), -- 1.1.1.5
+	(6, 1, null), -- 1.1.1.6
+
+	
+	
 
 
 

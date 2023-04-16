@@ -150,16 +150,24 @@ DROP TABLE IF EXISTS `Muro`;
 CREATE TABLE `Muro` (
     `CodMuro` INT NOT NULL AUTO_INCREMENT ,
     `Lunghezza` DECIMAL(4,2) NOT NULL,
-    `Vano` INT NOT NULL,
+    `Vano1` INT NOT NULL,
+    `Vano2` INT NOT NULL,
     PRIMARY KEY (`CodMuro`),
-    INDEX `fk_Muro_Vano_idx` (`Vano` ASC) VISIBLE,
-    CONSTRAINT `fk_Muro_Vano`
-        FOREIGN KEY (`Vano`) 
+    INDEX `fk_Muro_Vano1_idx` (`Vano1` ASC) VISIBLE,
+    INDEX `fk_Muro_Vano2_idx` (`Vano2` ASC) VISIBLE,
+    CONSTRAINT `fk_Muro_Vano1`
+        FOREIGN KEY (`Vano1`)
+        REFERENCES `Vano` (`CodVano`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION,
+    CONSTRAINT `fk_Muro_Vano2`
+        FOREIGN KEY (`Vano2`)
         REFERENCES `Vano` (`CodVano`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION
 )
 ENGINE = InnoDB;
+
 
 
 ---------------------------------
