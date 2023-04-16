@@ -37,6 +37,5 @@ CREATE PROCEDURE ConsigliIntervento(IN CodEdificio_f INT)
             SELECT sm.CodSensore, sm.Tipologia, sm.Soglia, sm.Longitudine, sm.Latitudine, sm.TimeStamp
             FROM MuriScelti ms INNER JOIN SensoriAllarmati sa ON sa.Muro = ms.CodMuro
         )
-    END $$
+    END $$
 DELIMITER;
-

@@ -15,6 +15,43 @@ values
 ----------------------------------
 -- RISCHIO
 ----------------------------------
+insert into Piano (Edificio, NumeroPiano, Perimetro, Area)
+values 
+	(1, 1, 62.4, 12418.56);
+
+----------------------------------
+-- Insert Funzione (del Vano)
+----------------------------------
+insert into Funzione (Nome)
+values
+	('Ingresso'),
+	('SalaDaPranzo'),
+	('CameraDaLetto'),
+	('Cucina'),
+	('Bagno'),
+	('Garage'),
+	('Cantina'),
+	('LocaleTecnico'),
+	('Balcone'),
+	('Disimpiego');
+
+
+----------------------------------
+-- Insert Vano
+----------------------------------
+insert into Vano (Edificio, Piano, Altezzamax, LunghezzaMax, LarghezzaMax, Funzione)
+values 
+	(1,1, 3.18, 4.08, );
+
+
+
+
+
+
+
+
+
+
 
 
 

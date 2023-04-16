@@ -48,8 +48,11 @@ CREATE TABLE `Rischio` (
     `Tipo` VARCHAR(45) NOT NULL,
     `Coefficiente` DECIMAL(2,1) NOT NULL,
     `AreaGeografica` VARCHAR(45) NOT NULL,
-    PRIMARY KEY (`CodRischio`)
-    INDEX `fk_Rischio_AreaGeografica_idx` (`AreaGeografica` ASC) VISIBLE,
+    `Tipo` VARCHAR(45) NOT NULL,
+    `Coefficiente` TINYINT NOT NULL,
+    PRIMARY KEY (`AreaGeografica`, `Tipo`),
+    INDEX `fk_Rischio_AreaGeografica_idx` (`AreaGeografica` ASC),
+    CONSTRAINT chk_risk CHECK (`Coefficiente` between 1 and 10),
     CONSTRAINT `fk_Rischio_AreaGeografica`
         FOREIGN KEY (`AreaGeografica`) REFERENCES `AreaGeografica` (`Nome`)
         ON DELETE NO ACTION
@@ -87,8 +90,8 @@ DROP TABLE IF EXISTS `Piano`;
 CREATE TABLE `Piano` (
     `Edificio` INT NOT NULL,
     `NumeroPiano` INT NOT NULL,
-    `Area` DECIMAL(5,2) NOT NULL,
-    `Perimetro` DECIMAL(5,2) NOT NULL,
+    `Area` FLOAT NOT NULL,
+    `Perimetro` FLOAT NOT NULL,
     PRIMARY KEY (Edificio, NumeroPiano),
     INDEX `fk_Piano_Edificio_idx` (`Edificio` ASC) VISIBLE,
     CONSTRAINT `fk_Piano_Edificio`
@@ -248,6 +251,7 @@ ENGINE = InnoDB;
 CREATE TABLE `Alert` (
     `Sensore` INT NOT NULL,
     `TimeStamp` TIMESTAMP NOT NULL,
+    `ValoreSuperamento`INT NOT NULL,
     PRIMARY KEY(`Sensore`, `TimeStamp`),
     INDEX `fk_Misura_idx` (`Sensore` ASC, `Timestamp` ASC) VISIBLE,
     CONSTRAINT `fk_Misura`
