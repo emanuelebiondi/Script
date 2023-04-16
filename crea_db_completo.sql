@@ -44,10 +44,9 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `Rischio`;
 CREATE TABLE `Rischio` (
-    `CodRischio` INT NOT NULL ,
+    `AreaGeografica` VARCHAR(45) NOT NULL,
     `Tipo` VARCHAR(45) NOT NULL,
     `Coefficiente` TINYINT NOT NULL,
-    `AreaGeografica` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`AreaGeografica`, `Tipo`),
     INDEX `fk_Rischio_AreaGeografica_idx` (`AreaGeografica` ASC),
     CONSTRAINT chk_risk CHECK (`Coefficiente` between 1 and 10),
@@ -252,6 +251,7 @@ ENGINE = InnoDB;
 CREATE TABLE `Alert` (
     `Sensore` INT NOT NULL,
     `TimeStamp` TIMESTAMP NOT NULL,
+    `ValoreSuperamento`INT NOT NULL,
     PRIMARY KEY(`Sensore`, `TimeStamp`),
     INDEX `fk_Misura_idx` (`Sensore` ASC, `Timestamp` ASC) VISIBLE,
     CONSTRAINT `fk_Misura`
