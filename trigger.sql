@@ -67,7 +67,7 @@ BEGIN
 END $$
 DELIMITER;
 
-
+/* Controllo sul piano del edificio */
 drop trigger if exists check_piano;
 delimiter $$
 create trigger check_piano before insert on Piano for each row
@@ -85,7 +85,7 @@ begin
 end $$
 delimiter ;
 
-
+/* Costo del lavoro */
 drop function if exists calcolo_costo_lavoro;
 delimiter $$
 create function calcolo_costo_lavoro(_CodLavoro int) returns decimal(10,2) reads sql data
@@ -129,7 +129,7 @@ begin
 end $$
 delimiter ;
 
--- L'ora di inizio e fine di un turno di un lavoratore non sono coerenti
+/* L'ora di inizio e fine di un turno di un lavoratore non sono coerenti */
 drop trigger if exists check_orario_turno_lavoratore
 delimiter $$
 create trigger check_orario_turno_lavoratore
@@ -142,7 +142,7 @@ begin
 end $$
 delimiter ;
 
--- Controlla che non venga inserito un turno con stesso lavoratore che si sovrappone ad un suo turno preesistente
+/* Controlla che non venga inserito un turno con stesso lavoratore che si sovrappone ad un suo turno preesistente */
 drop trigger if exists check_sovrapposizione_turno_lavoratore
 delimiter $$
 
@@ -160,7 +160,7 @@ begin
 end $$
 delimiter ;
 
--- Controlla la coerenza delle date dentro Progetto
+/* Controlla la coerenza delle date dentro Progetto */
 drop trigger if exists check_data_stadioavanzamentoprogetto
 delimiter $$
 
@@ -177,7 +177,7 @@ begin
 end $$
 delimiter ;
 
-
+/* Massimo numero di lavoratori */
 drop trigger if exists check_maxlavoratori
 delimiter $$
 
