@@ -278,14 +278,15 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `Progetto`;
 CREATE TABLE IF NOT EXISTS `Progetto`(
-    `CodProgetto` INT NOT NULL PRIMARY KEY,
+    `CodProgetto` INT NOT NULL AUTO_INCREMENT,
     `Edificio` INT NOT NULL,
     `DataPresentazione` DATE NOT NULL,
     `DataApprovazione`  DATE NOT NULL,
     `DataInizio` DATE NOT NULL,
     `StimaFine` DATE NOT NULL,
-    `DataFine` DATE NOT NULL,
+    `DataFine` DATE NULL,
     `CostoProgetto` DECIMAL(10,2) NULL, 
+    PRIMARY KEY(`CodProgetto`),
     INDEX `fk_Progetto_Edificio_idx` (`Edificio` ASC) VISIBLE,
     CONSTRAINT `fk_Progetto_Edificio`
         FOREIGN KEY (`Edificio`)

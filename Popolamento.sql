@@ -2,6 +2,59 @@ use SmartBuildings;
 -- SET FOREIGN_KEY_CHECKS = 0;
 
 ----------------------------------
+-- LAVORATORE
+----------------------------------
+insert into Lavoratore (CodFiscale, PagaOraria)
+values 
+	('LDATTL64L22D732G', 9),
+	('PRMGRM67A28A272V', 11),
+	('MDRGFR79P16L019O', 11),
+	('CLLRCL76M30A720O', 10),
+	('BNCQMD64H04C130C', 9),
+	('PRSRFL64T11H034X', 11),
+	('NCNNCI60H06I031X', 9),
+	('GRLPLG66C08D927T', 10),
+	('TZURME67D24D748V', 10),
+	('BTTRLD66R18B906N', 8),
+	('VRNGTN93E06G258H', 10),
+	('PLDCNL95M04I150R', 10),
+	('LCDDDG78R01A977D', 8),
+	('CNISMN95M30G568W', 8),
+	('DNNCLL92C17H221N', 8),
+	('BRNRCR56D01A398H', 8),
+	('TRNLII89L41C324P', 9),
+	('LBASGN94D01E457P', 10),
+	('SNDTRS92R41B858A', 11),
+	('LMNDDV80S01G140F', 9),
+	('SBRDMR65E41C390H', 8),
+	('BSTYLE55A41L779N', 7),
+	('CRCPGB69E41I259E', 7),
+	('LSANOX78S09E236Z',  7);
+		
+----------------------------------
+-- RESPONSABILE
+----------------------------------
+insert into Responsabile (CodFiscale, PagaProgetto)
+values 
+	('CTNMDL85P41G224X', 10000),	
+	('LPOLTD84S41G992I', 8000),
+	('CRNRZO89L41M214D', 15000);	
+
+----------------------------------
+-- CapoCantiere
+----------------------------------
+insert into CapoCantiere (CodFiscale, PagaOraria)
+values 
+	('CMBYZE44B15M297I', 17),	
+	('FMLSBX79A21I848T', 15),
+	('DHCQYP78L51L372I', 16),	
+	('FJYSCG79C57C125P', 15),
+	('HQTBHM90M51E819K', 17),	
+	('BZFTZI88E47F385W', 15),
+	('ZLZLXH27C03D728J', 16);	
+		
+
+----------------------------------
 -- Insert AreaGeografica 
 ----------------------------------
 insert into AreaGeografica (Nome)
@@ -141,7 +194,7 @@ values
 	(4, 6, 5), -- 1.1.6.1 -- Camera 2
 	(6, 6, 4), -- 1.1.6.2
 	(6, 6, null), -- 1.1.6.3
-	(4, 6, null); -- 1.1.6.4
+	(4, 6, null), -- 1.1.6.4
 
 	(10, 7, null), 	-- 1.2.1.1 -- Mansarda
 	(11, 7, null), 	-- 1.2.1.2
@@ -160,8 +213,8 @@ values
 	(14, 'S', 'Porta'), -- Vano 3-4
 	(22, 'N', 'Porta'), -- Vano 5-4
 	(26, 'N', 'Porta'), -- Vano 6-4
-	(20, 'E', 'Porta'); -- Vano 5-null
-
+	(20, 'E', 'Porta'), -- Vano 5-null
+	(32, 'E', 'Porta'); -- Vano 7-8
 
 insert into Finestra (Muro, PuntoCardinale)
 values
@@ -170,12 +223,42 @@ values
 	(12, 'N'), (13, 'E'),
 	(20, 'E'), 
 	(23, 'S'), (23, 'S'),
-	(27, 'S'), (28, 'E');
+	(27, 'S'), (28, 'E'),
 	
+	(29, 'N'), (29, 'N'), (29, 'N'),
+	(31, 'S'), (31, 'S'),
+	(32, 'E'), (32, 'E');
 	
 
 
 
+insert into Progetto (Edificio, DataPresentazione, DataApprovazione, DataInizio, StimaFine, DataFine)
+values
+	(1, '2022-01-10', '2022-02-10', '2022-03-15', '2022-06-20', '2022-06-22'); -- Progetto 1 
+	--(1, '2023-01-10', '2023-01-26', '2023-02-04', '2023-07-13', null); -- Progetto 2 edif.1
+
+
+insert into StadioAvanzamentoProgetto (Progetto, Responsabile, DataCompletamento)
+values
+	(1, 'CTNMDL85P41G224X', '2022-04-24'), -- 1 stadio
+	(1, 'LPOLTD84S41G992I', '2022-12-10'); -- 2 stadio
+
+insert into Lavoro (Stadio, DataInizio, DataFine, Descrizione, MaxOperai)
+values
+	(1, '2022-03-15', '2022-03-18', 'Rimozione Pavimento', 5),
+	(1, '2022-03-19', '2022-03-23', 'Rifacimento Massetto', 4),
+	(1, '2022-03-28', '2022-04-02', 'Messa in posa pavimento', 3),
+	(1, '2022-04-03', '2022-04-05', 'Montaggio Ponteggi', 5),
+	(1, '2022-04-06', '2022-04-12', 'Rimozione Vernice ', 6),
+	(1, '2022-04-13', '2022-04-20', 'Verniciatura Edificio', 6),
+	(1, '2022-04-21', '2022-04-24', 'Smontaggio Ponteggi', 4),
+
+	(1, '2022-04-25', '2022-04-28', 'Rimozione Pavimento', 4),
+	(1, '2022-05-01', '2022-05-06', 'Rifacimento Massetto', 3),
+	(1, '2022-05-07', '2022-05-10', 'Messa in posa pavimento', 4),
+	(1, '2022-05-11', '2022-05-15', 'Verniciatura', 3),
+	(1, '2022-05-16', '2022-05-18', 'Verniciatura', 2),
+	(1, '2022-05-19', '2022-06-22', 'Verniciatura', 3);
 
 
 
@@ -187,61 +270,6 @@ values
 
 
 
-/*
-----------------------------------
--- LAVORATORE
-----------------------------------
-insert into Lavoratore (CodFiscale, PagaOraria)
-values 
-	('LDATTL64L22D732G', 9),
-	('PRMGRM67A28A272V', 11),
-	('MDRGFR79P16L019O', 11),
-	('CLLRCL76M30A720O', 10),
-	('BNCQMD64H04C130C', 9),
-	('PRSRFL64T11H034X', 11),
-	('NCNNCI60H06I031X', 9),
-	('GRLPLG66C08D927T', 10),
-	('TZURME67D24D748V', 10),
-	('BTTRLD66R18B906N', 8),
-	('VRNGTN93E06G258H', 10),
-	('PLDCNL95M04I150R', 10),
-	('LCDDDG78R01A977D', 8),
-	('CNISMN95M30G568W', 8),
-	('DNNCLL92C17H221N', 8),
-	('BRNRCR56D01A398H', 8),
-	('TRNLII89L41C324P', 9),
-	('LBASGN94D01E457P', 10),
-	('SNDTRS92R41B858A', 11),
-	('LMNDDV80S01G140F', 9),
-	('SBRDMR65E41C390H', 8),
-	('BSTYLE55A41L779N', 7),
-	('CRCPGB69E41I259E', 7),
-	('LSANOX78S09E236Z',  7);
-		
-----------------------------------
--- RESPONSABILE
-----------------------------------
-insert into Responsabile (CodFiscale, PagaProgetto)
-values 
-	('CTNMDL85P41G224X', 10000),	
-	('LPOLTD84S41G992I', 8000),
-	('CRNRZO89L41M214D', 15000);	
-
-----------------------------------
--- CapoCantiere
-----------------------------------
-insert into CapoCantiere (CodFiscale, PagaOraria)
-values 
-	('CMBYZE44B15M297I', 17),	
-	('FMLSBX79A21I848T', 15),
-	('DHCQYP78L51L372I', 16),	
-	('FJYSCG79C57C125P', 15),
-	('HQTBHM90M51E819K', 17),	
-	('BZFTZI88E47F385W', 15),
-	('ZLZLXH27C03D728J', 16);	
-		
 
 
 
-
-*/
