@@ -2,7 +2,7 @@ DROP PROCEDURE IF EXISTS ConsigliIntervento;
 DELIMITER $$
 CREATE PROCEDURE ConsigliIntervento(IN CodEdificio_f INT)
     BEGIN
-        DECLARE fattoreDiRischio FLOAT;  
+        DECLARE fattoreDiRischio FLOAT;
         DECLARE ContaPiani INT;
         SET fattoreDiRischio =(
             SELECT r.Coefficiente
@@ -14,7 +14,6 @@ CREATE PROCEDURE ConsigliIntervento(IN CodEdificio_f INT)
                     WHERE ed.CodEdificio = CodEdificio_f AND cd.Tipologia = "Sismico"
                 )
         );
-        
         SET ContaPiani = (
             SELECT COUNT(*)
             FROM Piano
@@ -50,12 +49,13 @@ CREATE PROCEDURE ConsigliIntervento(IN CodEdificio_f INT)
             )
         )
         SELECT ar.Piano, (
-            IF (
-            (ar.Tipologia = "Giroscopio" OR ar.Tipologia = "Accelerometro") 
-            AND ar.Piano < ContaPiani, CONCAT("Consigliata ristrutturazione del solaio del piano",ar.Piano),
-            IF ((ar.Tipologia = "Giroscopio" OR ar.Tipologia = "Accelerometro") 
-			AND ar.Piano = ContaPiani, CONCAT("Consigliata ristrutturazione tetto", CONCAT("Ristrutturazione muro", ar.CodMuro))
-            )
+            IF ((ar.Tipologia = "Giroscopio"
+             OR ar.Tipologia = "Accelerometro"
+             ) AND ar.Piano < ContaPiani, CONCAT("Consigliata ristrutturazione del solaio del piano",ar.Piano),
+            IF ((ar.Tipologia = "Giroscopio"
+             OR ar.Tipologia = "Accelerometro")
+             AND ar.Piano = ContaPiani, CONCAT("Consigliata ristrutturazione tetto")
+             , CONCAT("Ristrutturazione muro", ar.CodMuro)))
             ) AS Suggerimento,(
                 IF (ar.DannoPerc BETWEEN 1 AND 20, "120 giorni",
                 IF (ar.DannoPerc BETWEEN 1 AND 20, "90 giorni",
@@ -64,7 +64,7 @@ CREATE PROCEDURE ConsigliIntervento(IN CodEdificio_f INT)
                 IF (ar.DannoPerc BETWEEN 1 AND 20, "10 giorni",
                 "Iniziare i lavori il prima possibile")))))
                 ) AS TemporisticaInterventi
-            )
+            
             FROM AlertRecenti ar;
     END $$
 DELIMITER;
