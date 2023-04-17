@@ -71,7 +71,7 @@ DELIMITER;
 
 DROP PROCEDURE IF EXISTS StimaDanni;
 DELIMITER $$
-CREATE PROCEDURE StimaDanni (IN CodEdificio INT, OUT coeffPrevisione FLOAT)
+CREATE PROCEDURE StimaDanni (IN CodEdificio_f INT, OUT coeffPrevisione FLOAT)
     BEGIN
         DECLARE coeffSensore FLOAT DEFAULT 25;
         WITH MuriScelti AS(
@@ -80,12 +80,43 @@ CREATE PROCEDURE StimaDanni (IN CodEdificio INT, OUT coeffPrevisione FLOAT)
             WHERE v.Edificio = CodEdificio_f
         ),
         SensoriScelti AS(
-            SELECT s.CodSensore, m.ValoreX, m.ValoreY, m.ValoreZ, 
+            SELECT s.CodSensore, m.ValoreX, m.ValoreY, m.ValoreZ, SQRT(m.ValoreX*m.ValoreX+m.ValoreY*m.ValoreY+m.ValoreZ*m.ValoreZ)/Soglia AS PercValori
             FROM Sensore s INNER JOIN Misura m ON s.CodSensore = m.Sensore
         )
         SET coeffSensore = (
-            SELECT
+            SELECT SUM(PercValori)*0.25
             FROM SensoriScelti
-        )
+        );
+        DECLARE coeffStato FLOAT DEFAULT 50;
+        SET coeffStato =(
+            SELECT IF(e.Stato IS NULL, 0, e.Stato)/3 * 0.5 AS PercValoriStato
+            FROM Edificio E
+            WHERE e.CodEdificio = CodEdificio_f
+        );
+        DECLARE coeffCalamita FLOAT DEFAULT 25;
+        SET coeffCalamita = (
+            SELECT eventiDiEdificio/TotaleEventi*0.25
+            FROM (
+                SELECT COUNT(*) AS TotaleEventi, (
+                    SELECT COUNT(*)
+                    FROM Calamita c1 INNER JOIN Edificio e1 ON e1.AreaGeografica = c1.AreaGeografica
+                    WHERE c1.Tipologia = "Terremoto" AND e1.CodEdificio = CodEdificio_f
+                ) AS eventiDiEdificio
+                FROM Calamita c
+                WHERE c.Tipologia = "Terremoro"
+            )
+        );
+        SET coeffPrevisione = IFNULL(coeffCalamita+coeffSensore+coeffStato, 0);
+        DECLARE Messaggio VARCHAR(30);
+        IF coeffPrevisione = 0 THEN SET Stringa = 'Nessun rischio';
+            ELSE IF coeffPrevisione <=3 THEN SET Stringa = 'Danni superficiali';
+                ELSE IF coeffPrevisione <=5 THEN SET Stringa = 'Danni strutturali';
+                    ELSE SET Stringa = 'Danni gravi alla struttura';
+                END IF;
+            END IF;
+        END IF;
+
+        SELECT coeffPrevisione as IndiceCalcolato, Messaggio;
+
     END $$
 DELIMITER ;
