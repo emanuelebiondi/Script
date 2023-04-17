@@ -5,13 +5,23 @@ delimiter $$
 
 create procedure stampa_registrazioni_24 (in CodEdificio int)
 begin
-    with RegistrazioniEdificio as(
-        select  M.Sensore, M.ValoreX, M.ValoreY, M.ValoreZ
-        from    Sensore S inner join Misura M on S.CodSensore = M.Sensore
-        where   S.Edificio = _CodEdificio
-            and timestamp >= current_timestamp - interval 1 day
-    )
+    with MuriScelti AS(
+            SELECT  v.Edificio, m.CodMuro
+            FROM Vano v INNER JOIN Muro m ON m.Piano = v.Piano
+            WHERE v.Edificio = CodEdificio_f
+    ),
 
+    SensoriScelti as(
+        select *
+        from    Sensore S inner join MuriScelti M on S.Muro = M.CodMuro    
+    ),
+    
+    RegistrazioniEdificio as(
+        select M.Sensore, M.ValoreX, M.ValoreY, M.ValoreZ
+        from SensoriScelti S inner join Misura M on S.CodSensore=M.Sensore
+        where  timestamp >= current_timestamp - interval 1 day
+    )
+    
     select  *
     from    RegistrazioniEdificio
     order by    Sensore;
