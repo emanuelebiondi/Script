@@ -260,7 +260,7 @@ ENGINE = InnoDB;
 CREATE TABLE `Alert` (
     `Sensore` INT NOT NULL,
     `TimeStamp` TIMESTAMP NOT NULL,
-    `ValoreSuperamento`INT NOT NULL,
+    `ValoreSuperamento` DECIMAL(5,2),
     PRIMARY KEY(`Sensore`, `TimeStamp`),
     INDEX `fk_Misura_idx` (`Sensore` ASC, `Timestamp` ASC) VISIBLE,
     CONSTRAINT `fk_Misura`

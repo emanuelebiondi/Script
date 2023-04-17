@@ -1,6 +1,60 @@
 use SmartBuildings;
 -- SET FOREIGN_KEY_CHECKS = 0;
 
+set @acc_max = 4 ;
+set @est_max = 10 ;
+set @temp_max = 15 ;
+
+
+DROP PROCEDURE IF EXISTS insertRowsToMisura_Accellerometro;
+DROP PROCEDURE IF EXISTS insertRowsToMisura_Temperatura;
+DROP PROCEDURE IF EXISTS insertRowsToMisura_Pluviometro;
+
+DELIMITER //  
+CREATE PROCEDURE insertRowsToMisura_Accellerometro()   
+BEGIN
+DECLARE i INT DEFAULT 1; 
+	WHILE (i <= 36) DO -- 3600 in un ora
+		-- Accellerometro
+		INSERT INTO Misura (Sensore,Timestamp,ValoreX,ValoreY,ValoreZ)
+		select 	CodSensore, current_timestamp()-interval i second, 
+				@acc_max*rand()-@acc_max/2, @acc_max*rand()-@acc_max/2, @acc_max*rand()-@acc_max/2
+		from Sensore s
+		where s.Tipologia='Accellerometro';
+		set i = i+1;
+	END WHILE;
+END //
+
+
+CREATE PROCEDURE insertRowsToMisura_Temperatura() 
+BEGIN
+	DECLARE i INT DEFAULT 1; 
+		WHILE (i <= 6) DO
+			-- Temperatura
+			INSERT INTO Misura (Sensore,Timestamp,ValoreX,ValoreY,ValoreZ)
+			select 	CodSensore, current_timestamp()-interval 10*i minute, @temp_max*rand(), null, null
+			from Sensore s
+			where s.Tipologia='Temperatura';
+			set i = i+1;
+		END WHILE;
+END //
+
+CREATE PROCEDURE insertRowsToMisura_Pluviometro()
+BEGIN
+	DECLARE i INT DEFAULT 1; 
+		WHILE (i <= 12) DO
+			-- Temperatura
+			INSERT INTO Misura (Sensore,Timestamp,ValoreX,ValoreY,ValoreZ)
+			select 	CodSensore, current_timestamp()-interval 5*i minute, 1*rand(), null, null
+			from Sensore s
+			where s.Tipologia='Pluviometro';
+			set i = i+1;
+		END WHILE;
+END //
+DELIMITER ;
+
+
+
 ----------------------------------
 -- LAVORATORE
 ----------------------------------
@@ -388,37 +442,24 @@ values
 	(2, 'Temperatura', 40, 43.640578, 10.290558), -- 3
 	(36, 'Temperatura', 46, 43.640578, 10.290558), -- 4
 	(18, 'Temperatura', 46, 43.640578, 10.290558), -- 5
-	(20, 'Allungamento', 1.00, 43.640578, 10.290558), -- 6
-	(35, 'Giroscopio', 1.00, 43.640578, 10.290558), -- 7
-	(36, 'Accellerometro', 1.00, 43.640578, 10.290558); -- 7
+	(20, 'Allungamento', 1.00, 43.640578, 10.290558), -- 6 cm
+	(36, 'Accellerometro', 1.9, 43.640578, 10.290558); -- 7
 
 
 
--- truncate table Misura;
-set @acc_max = 4 ;
-set @est_max = 10 ;
-set @temp_max = 15 ;
-
-
-
-
---
-
-DROP PROCEDURE IF EXISTS insertRowsToMisura;
-DELIMITER //  
-CREATE PROCEDURE insertRowsToMisura()   
-BEGIN
-DECLARE i INT DEFAULT 1; 
-WHILE (i <= 30) DO
-    INSERT INTO Misura (Sensore,Timestamp,ValoreX,ValoreY,ValoreZ)
-	select 	CodSensore, current_timestamp()-interval 3 second, 
-			@acc_max*rand()-@acc_max/2, @acc_max*rand()-@acc_max/2, @acc_max*rand()-@acc_max/2
+INSERT INTO Misura (Sensore,Timestamp,ValoreX,ValoreY,ValoreZ)
+	select 	CodSensore, current_timestamp()-interval 10 minute, 0.1, null, null
 	from Sensore s
-	where s.Tipologia='Accellerometro';
+	where s.Tipologia='Allungamento';
 
-END WHILE;
-END;
-//  
-DELIMITER ;
+call insertRowsToMisura_Accellerometro();
+call insertRowsToMisura_Temperatura();
+call insertRowsToMisura_Pluviometro();
 
 
+INSERT INTO Alert (Sensore,Timestamp)
+	select m.Sensore, m.Timestamp 
+	from Misura m
+	inner join Sensore s on s.codSensore = m.Sensore
+	where
+	(m.ValoreX > s.Soglia or m.ValoreY > s.Soglia or m.ValoreZ > s.Soglia);
