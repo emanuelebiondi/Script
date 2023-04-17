@@ -90,21 +90,21 @@ delimiter $$
 create procedure calcola_bustapaga (in _dipendente char(16), in anno int, in mese int)
 begin
     select count(*) * PagaOraria /12 as BustaPaga
-    from Turno T inner join Lavoratore L on T.Lavoratore = D.CodFiscale
+    from Turno T inner join Lavoratore L on T.Lavoratore = L.CodFiscale
     where year(T.TimestampInizio) = anno and month(T.TimestampInizio) = mese and L.CodFiscale = _dipendente;
 end $$
 delimiter ;
                                  
                                  
 
---OP. 5------------------------------------------------
+-- OP. 6------------------------------------------------
 DROP PROCEDURE IF EXISTS NewTurnoOperaio;
 DELIMITER $$
 
 CREATE PROCEDURE NewTurnoOperaio(IN CodLavoro_f INT, IN Lavoratore_f VARCHAR(16), IN Inizio_f DATETIME(3), IN Fine_f DATETIME(3));
     BEGIN
         DECLARE CapoCantiere_f VARCHAR(16);
-        SELECT CapoCantiere INTO CodFiscale FROM CapoCantiere WHERE CodLavoro_f=CodLavoro;
+        SELECT CapoCantiere INTO CapoCantiere_f FROM Turno WHERE CodLavoro_f=Lavoro;
 
         -- Controllo che il turno non duri troppo poco --
         DECLARE OreDiLavoro FLOAT;
@@ -144,27 +144,27 @@ END $$
 DELIMITER;
 
 
---OP. 7------------------------------------------------
+-- OP. 7------------------------------------------------
 DROP PROCEDURE IF EXISTS RischiAnnuiEdificio;
 DELIMITER $$
 
 CREATE PROCEDURE RischiAnnuiEdificio(IN CodEdificio_f INT UNSIGNED)
     BEGIN  
-        DECLARE sede VARCHAR(255);
+        DECLARE sede VARCHAR(45);
         SET sede = (
                 SELECT AreaGeografica
                 FROM Edificio
                 WHERE CodEdificio =CodEdificio_f
         );
         SELECT *
-        FROM Rischio
+        FROM Calamita
         WHERE AreaGeografica=sede
-                AND YEAR(DATA) = YEAR(CURRENT_DATE);
+                AND YEAR(Data) = YEAR(CURRENT_DATE);
     END $$
-DELIMITER;
+DELIMITER ;
 
 
---OP. 9------------------------------------------------
+-- OP. 8------------------------------------------------
 DROP PROCEDURE IF EXISTS InfoAlert;
 DELIMITER $$
 
