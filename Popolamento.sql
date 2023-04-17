@@ -169,7 +169,7 @@ values
 ----------------------------------
 -- Insert Edificio
 ----------------------------------
-insert into Edificio (Tipologia, DataRealizzazione, StatoEdificio, Longitudine, Latitudine, AreaGeografica)
+insert into Edificio (Tipologia, DataRealizzazione, StatoEdificio, Latitudine, Longitudine, AreaGeografica)
 values 
 	('Villetta', '2020-07-13', 1, 43.640578, 10.290558, 'Centro'), -- CodEdificio = 1
 	('Condominio', '1989-05-21', 2, 38.153594, 15.660652, 'Sud'); -- CodEdificio = 2
