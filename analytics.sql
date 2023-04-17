@@ -69,31 +69,26 @@ CREATE PROCEDURE ConsigliIntervento(IN CodEdificio_f INT)
     END $$
 DELIMITER;
 
+
 DROP PROCEDURE IF EXISTS StimaDanni;
 DELIMITER $$
 CREATE PROCEDURE StimaDanni (IN CodEdificio_f INT, OUT coeffPrevisione FLOAT)
     BEGIN
         DECLARE coeffSensore FLOAT DEFAULT 25;
-        WITH MuriScelti AS(
-            SELECT m.CodMuro, m.Piano
-            FROM Vano v INNER JOIN Muro m ON m.Piano = v.Piano
-            WHERE v.Edificio = CodEdificio_f
-        ),
-        SensoriScelti AS(
-            SELECT s.CodSensore, m.ValoreX, m.ValoreY, m.ValoreZ, SQRT(m.ValoreX*m.ValoreX+m.ValoreY*m.ValoreY+m.ValoreZ*m.ValoreZ)/Soglia AS PercValori
-            FROM Sensore s INNER JOIN Misura m ON s.CodSensore = m.Sensore
-        )
+        DECLARE coeffStato FLOAT DEFAULT 50;
+        DECLARE coeffCalamita FLOAT DEFAULT 25;
+        DECLARE Stringa VARCHAR(30);
         SET coeffSensore = (
             SELECT SUM(PercValori)*0.25
             FROM SensoriScelti
         );
-        DECLARE coeffStato FLOAT DEFAULT 50;
+        
+        
         SET coeffStato =(
             SELECT IF(e.Stato IS NULL, 0, e.Stato)/3 * 0.5 AS PercValoriStato
             FROM Edificio E
             WHERE e.CodEdificio = CodEdificio_f
         );
-        DECLARE coeffCalamita FLOAT DEFAULT 25;
         SET coeffCalamita = (
             SELECT eventiDiEdificio/TotaleEventi*0.25
             FROM (
@@ -107,16 +102,24 @@ CREATE PROCEDURE StimaDanni (IN CodEdificio_f INT, OUT coeffPrevisione FLOAT)
             )
         );
         SET coeffPrevisione = IFNULL(coeffCalamita+coeffSensore+coeffStato, 0);
-        DECLARE Messaggio VARCHAR(30);
+        
         IF coeffPrevisione = 0 THEN SET Stringa = 'Nessun rischio';
             ELSE IF coeffPrevisione <=3 THEN SET Stringa = 'Danni superficiali';
                 ELSE IF coeffPrevisione <=5 THEN SET Stringa = 'Danni strutturali';
                     ELSE SET Stringa = 'Danni gravi alla struttura';
                 END IF;
             END IF;
-        END IF;
-
-        SELECT coeffPrevisione as IndiceCalcolato, Messaggio;
+        END IF;  
+        WITH MuriScelti AS(
+            SELECT m.CodMuro, m.Piano
+            FROM Vano v INNER JOIN Muro m ON m.Piano = v.Piano
+            WHERE v.Edificio = CodEdificio_f
+        ),
+        SensoriScelti AS(
+            SELECT s.CodSensore, m.ValoreX, m.ValoreY, m.ValoreZ, SQRT(m.ValoreX*m.ValoreX+m.ValoreY*m.ValoreY+m.ValoreZ*m.ValoreZ)/Soglia AS PercValori
+            FROM Sensore s INNER JOIN Misura m ON s.CodSensore = m.Sensore
+        )
+        SELECT coeffPrevisione AS IndiceCalcolato, Stringa;
 
     END $$
 DELIMITER ;
