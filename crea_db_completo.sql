@@ -536,8 +536,7 @@ CREATE TABLE IF NOT EXISTS `Turno` (
     CONSTRAINT `fk_CapoCantiere_Turno`
         FOREIGN KEY (`CapoCantiere`)
         REFERENCES `CapoCantiere` (`CodFiscale`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION,
+        ON DELETE NO ACTION,
     CONSTRAINT `fk_Lavoratore_Turno`
         FOREIGN KEY (`Lavoratore`)
         REFERENCES `Lavoratore` (`CodFiscale`)
