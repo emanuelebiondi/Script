@@ -375,8 +375,6 @@ CREATE TABLE IF NOT EXISTS `Lavoro` (
     CONSTRAINT `fk_StadioAvanzamentoProgetto_Lavoro`
         FOREIGN KEY (`Stadio`)
         REFERENCES `StadioAvanzamentoProgetto`(`CodStadio`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION
 )
 ENGINE = InnoDB;
 

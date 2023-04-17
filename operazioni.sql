@@ -1,4 +1,4 @@
---OP.1 Stampare le registrazioni di ogni sensore di un edificio nelle ultime 24 ore
+-- OP.1 Stampare le registrazioni di ogni sensore di un edificio nelle ultime 24 ore
 
 drop procedure if exists stampa_registrazioni_24;
 delimiter $$
@@ -40,20 +40,19 @@ begin
         select  P.NumeroPiano, P.Area, P.Perimetro
         from    Piano P
         where   P.Edificio = _CodEdificio
-    )
-
-    VaniEdificioScelto as(
+    ),
+	VaniEdificioScelto as(
         select  PES.NumeroPiano as NumPiano, PES.Perimetro as PerimetroPiano, PES.Area as AreaPiano, V.CodVano, V.LarghezzaMax, V.LunghezzaMax, V.AltezzaMax, V.Funzione
         from    Vano V inner join PianiEdificioScelto PES on PES.NumeroPiano = V.Piano 
     )
 
     
     select  *
-    from VaniEdificioScelto
+    from VaniEdificioScelto;
 end $$
 delimiter ;
 
---OP.3 Calcolare il costo di un progetto
+-- OP.3 Calcolare il costo di un progetto
 drop procedure if exists calcola_costo_progetto
 delimiter $$
 
@@ -66,7 +65,7 @@ begin
 end $$
 delimiter ;
 
---OP.4 Inserimento nuovo tipo di materiale generico
+-- OP.4 Inserimento nuovo tipo di materiale generico
 
 drop procedure if exists nuovo_materiale
 delimiter $$
@@ -97,17 +96,17 @@ delimiter ;
                                  
                                  
 
---OP. 5------------------------------------------------
+-- OP. 5------------------------------------------------
 DROP PROCEDURE IF EXISTS NewTurnoOperaio;
 DELIMITER $$
 
-CREATE PROCEDURE NewTurnoOperaio(IN CodLavoro_f INT, IN Lavoratore_f VARCHAR(16), IN Inizio_f DATETIME(3), IN Fine_f DATETIME(3));
+CREATE PROCEDURE NewTurnoOperaio(IN CodLavoro_f INT, IN Lavoratore_f VARCHAR(16), IN Inizio_f DATETIME(3), IN Fine_f DATETIME(3))
     BEGIN
-        DECLARE CapoCantiere_f VARCHAR(16);
+        DECLARE CapoCantiere_f VARCHAR(16); 
+        DECLARE OreDiLavoro FLOAT;
         SELECT CapoCantiere INTO CodFiscale FROM CapoCantiere WHERE CodLavoro_f=CodLavoro;
 
         -- Controllo che il turno non duri troppo poco --
-        DECLARE OreDiLavoro FLOAT;
         SET OreDiLavoro=(Fine_f-Inizio_f);
         IF OreDiLavoro <= 0.015 THEN
             SIGNAL SQLSTATE "45000"
@@ -144,7 +143,7 @@ END $$
 DELIMITER;
 
 
---OP. 7------------------------------------------------
+-- OP. 7------------------------------------------------
 DROP PROCEDURE IF EXISTS RischiAnnuiEdificio;
 DELIMITER $$
 
@@ -164,7 +163,7 @@ CREATE PROCEDURE RischiAnnuiEdificio(IN CodEdificio_f INT UNSIGNED)
 DELIMITER;
 
 
---OP. 9------------------------------------------------
+-- OP. 9------------------------------------------------
 DROP PROCEDURE IF EXISTS InfoAlert;
 DELIMITER $$
 
