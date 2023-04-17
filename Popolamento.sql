@@ -272,9 +272,6 @@ values
 	(21, 'N'), (21, 'N'), (21, 'N'),
 	(20, 'S'), (20, 'S'),
 	(23, 'E'), (23, 'E');
-	
-
-
 
 insert into Progetto (Edificio, DataPresentazione, DataApprovazione, DataInizio, StimaFine, DataFine)
 values
@@ -447,7 +444,7 @@ call insertRowsToMisura_Pluviometro();
 
 
 INSERT INTO Alert (Sensore,Timestamp, ValoreSuperamento)
-	select m.Sensore, m.Timestamp, IF(m.ValoreX <= S.Soglia, IF(m.ValoreY <= S.Soglia, IF(m.ValoreZ <= s.Soglia, NULL, m.ValoreZ), m.ValoreY), m.ValoreX)
+	select m.Sensore, m.Timestamp, IF(m.ValoreX <= s.Soglia, IF(m.ValoreY <= s.Soglia, IF(m.ValoreZ <= s.Soglia, NULL, m.ValoreZ), m.ValoreY), m.ValoreX)
 	from Misura m
 	inner join Sensore s on s.codSensore = m.Sensore
 	where (m.ValoreX > s.Soglia or m.ValoreY > s.Soglia or m.ValoreZ > s.Soglia);
