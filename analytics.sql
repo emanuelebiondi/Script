@@ -68,3 +68,24 @@ CREATE PROCEDURE ConsigliIntervento(IN CodEdificio_f INT)
             FROM AlertRecenti ar;
     END $$
 DELIMITER;
+
+DROP PROCEDURE IF EXISTS StimaDanni;
+DELIMITER $$
+CREATE PROCEDURE StimaDanni (IN CodEdificio INT, OUT coeffPrevisione FLOAT)
+    BEGIN
+        DECLARE coeffSensore FLOAT DEFAULT 25;
+        WITH MuriScelti AS(
+            SELECT m.CodMuro, m.Piano
+            FROM Vano v INNER JOIN Muro m ON m.Piano = v.Piano
+            WHERE v.Edificio = CodEdificio_f
+        ),
+        SensoriScelti AS(
+            SELECT s.CodSensore, m.ValoreX, m.ValoreY, m.ValoreZ, 
+            FROM Sensore s INNER JOIN Misura m ON s.CodSensore = m.Sensore
+        )
+        SET coeffSensore = (
+            SELECT
+            FROM SensoriScelti
+        )
+    END $$
+DELIMITER ;
