@@ -389,11 +389,9 @@ values
 	(36, 'Temperatura', 46, 43.640578, 10.290558), -- 4
 	(18, 'Temperatura', 46, 43.640578, 10.290558), -- 5
 	(20, 'Allungamento', 1.00, 43.640578, 10.290558), -- 6
-	(35, 'Giroscopio', 1.00, 43.640578, 10.290558); -- 7
+	(35, 'Giroscopio', 1.00, 43.640578, 10.290558), -- 7
+	(36, 'Accellerometro', 1.00, 43.640578, 10.290558); -- 7
 
-insert into Misura(Sensore, Timestamp, ValoreX, ValoreY, ValoreZ)
-values
-	(1, '2022');
 
 
 -- truncate table Misura;
@@ -403,16 +401,24 @@ set @temp_max = 15 ;
 
 
 
-INSERT INTO Misura (Sensore,Timestamp,ValoreX,ValoreY,ValoreZ)
+
+--
+
+DROP PROCEDURE IF EXISTS insertRowsToMisura;
+DELIMITER //  
+CREATE PROCEDURE insertRowsToMisura()   
+BEGIN
+DECLARE i INT DEFAULT 1; 
+WHILE (i <= 30) DO
+    INSERT INTO Misura (Sensore,Timestamp,ValoreX,ValoreY,ValoreZ)
 	select 	CodSensore, current_timestamp()-interval 3 second, 
 			@acc_max*rand()-@acc_max/2, @acc_max*rand()-@acc_max/2, @acc_max*rand()-@acc_max/2
 	from Sensore s
-	where s.Tipologia='Accellerometro' ;
+	where s.Tipologia='Accellerometro';
 
-
-
-
-
-
+END WHILE;
+END;
+//  
+DELIMITER ;
 
 
