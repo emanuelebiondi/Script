@@ -1,7 +1,7 @@
-
+USE SmartBuildings;
 /* Vincolo PuntoAccesso.PuntoCardinale */
 DELIMITER $$
-DROP TRIGGER IF EXISTS check_puntocardinale_puntoaccesso
+DROP TRIGGER IF EXISTS check_puntocardinale_puntoaccesso;
 CREATE TRIGGER check_puntocardinale_puntoaccesso
 BEFORE INSERT ON PuntoAccesso
 FOR EACH ROW
@@ -38,14 +38,14 @@ END $$
 DELIMITER ;
 
 
-/* Vincolo Calamita.Tipologia */
+/* Vincolo Rischio.Tipologia */
 DELIMITER $$
-DROP TRIGGER IF EXISTS check_tipologia_calamita;
-CREATE TRIGGER check_tipologia_calamita
-BEFORE INSERT ON Calamita
+DROP TRIGGER IF EXISTS check_tipologia_Rischio;
+CREATE TRIGGER check_tipologia_Rischio
+BEFORE INSERT ON Rischio
 FOR EACH ROW
 BEGIN
-    IF  NEW.Tipologia <> 'Sismico' AND NEW.Tipologia <> 'Idrogeologico' AND NEW.Tipologia <> 'Meteorologico'
+    IF  NEW.Tipo <> 'Sismico' AND NEW.Tipo <> 'Idrogeologico' AND NEW.Tipo <> 'Meteorologico'
     THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Tipologia di Calamita non valida!';
@@ -55,9 +55,9 @@ DELIMITER;
 
 /* Vincolo PuntoAccesso.Tipologia */
 DELIMITER $$
-DROP TRIGGER IF EXISTS check_tipologia_calamita;
-CREATE TRIGGER check_tipologia_calamita
-BEFORE INSERT ON Calamita
+DROP TRIGGER IF EXISTS check_tipologia_PuntoAccesso;
+CREATE TRIGGER check_tipologia_PuntoAccess
+BEFORE INSERT ON PuntoAccesso
 FOR EACH ROW
 BEGIN
     IF  NEW.Tipologia <> 'Porta' AND NEW.Tipologia <> 'Arco' AND NEW.Tipologia <> 'AccessoSenzaSerramento' AND NEW.Tipologia <> 'Portafinestra'
@@ -78,7 +78,6 @@ FOR EACH ROW
 BEGIN 
     IF  NEW.Tipologia <> 'Giroscopio' AND NEW.Tipologia <> 'Temperatura' AND NEW.Tipologia <> 'Allungamento' AND NEW.Tipologia <> 'Pluviometro' AND NEW.Tipologia <> 'Accelerometro'
     THEN 
-    THEN 
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Tipologia di sensore non valida!';
     END IF;
@@ -90,12 +89,12 @@ drop trigger if exists check_piano;
 delimiter $$
 create trigger check_piano before insert on Piano for each row
 begin
-    if NEW.NumeroPiano > 0 and not exists (select 1 from Piano where Edificio = new.Edificio and NumeroPiano = new.NumeroPiano-1)
+    if NEW.NumeroPiano > 1 and not exists (select 1 from Piano where Edificio = new.Edificio and NumeroPiano = new.NumeroPiano-1)
 	then
         signal sqlstate '45000'
         set message_text = "Non puoi inserire il piano x senza il piano x-1";
 	end if;
-    if NEW.NumeroPiano < 0 and not exists (select 1 from Piano where Edificio = new.Edificio and NumeroPiano = new.NumeroPiano+1)
+    if NEW.NumeroPiano < 1 and not exists (select 1 from Piano where Edificio = new.Edificio and NumeroPiano = new.NumeroPiano+1)
 	then
         signal sqlstate '45000'
         set message_text = "Non puoi inserire il piano sotterraneo x senza il piano x+1";
@@ -103,16 +102,16 @@ begin
 end $$
 delimiter ;
 
-/* Costo del lavoro */
+/* Costo del lavoro 
 drop function if exists calcolo_costo_lavoro;
 delimiter $$
 create function calcolo_costo_lavoro(_CodLavoro int) returns decimal(10,2) reads sql data
 begin
 	declare costo_impiego, costo_materiale,costo_responsabile, costo_capocantiere decimal(10,2) default 0;
 
-	select sum(L.PagaOraria * (TIMESTAMPDIFF(HOUR, T.TimestampInizio, T.TimestampFine))) --Calcola la somma della paga di operaio conteggiando le ore di lavoro svolte
+	select sum(L.PagaOraria * (TIMESTAMPDIFF(HOUR, T.TimestampInizio, T.TimestampFine))) -- Calcola la somma della paga di operaio conteggiando le ore di lavoro svolte
     into costo_impiego
-	from Turno T inner join Lavoratore L on T.operaio = L.CodFiscale
+	from Turno T inner join Lavoratore L on T.Lavoratore = L.CodFiscale
 	where T.Lavoro = _CodLavoro;
     
 	select sum(M.CostoLotto)
@@ -133,7 +132,7 @@ begin
     return costo_impiego + costo_responsabile + costo_materiale + costo_capocantiere;
 end $$
 delimiter ;
-
+*/
 
 drop trigger if exists costo_lavoro;
 delimiter $$
@@ -141,14 +140,14 @@ create trigger costo_lavoro after update on Lavoro for each row
 begin
     if old.DataFine is null and new.DataFine is not null then
 	    update Progetto
-		set CostoProgetto = CostoProgetto + calcolo_costo_lavoro(new.id)
-		where id = (select Progetto from StadioAvanzamentoProgetto where id = new.Stadio);
+		set CostoProgetto = CostoProgetto + calcolo_costo_lavoro(new.CodLavoro)
+		where CodLavoro = (select Progetto from StadioAvanzamentoProgetto where CodLavoro = new.Stadio);
     end if;
 end $$
 delimiter ;
 
 /* L'ora di inizio e fine di un turno di un lavoratore non sono coerenti */
-drop trigger if exists check_orario_turno_lavoratore
+drop trigger if exists check_orario_turno_lavoratore;
 delimiter $$
 create trigger check_orario_turno_lavoratore
 before insert on Turno for each row
@@ -160,8 +159,8 @@ begin
 end $$
 delimiter ;
 
-/* Controlla che non venga inserito un turno con stesso lavoratore che si sovrappone ad un suo turno preesistente */
-drop trigger if exists check_sovrapposizione_turno_lavoratore
+/* Controlla che non venga inserito un turno con stesso lavoratore che si sovrappone ad un suo turno preesistente 
+drop trigger if exists check_sovrapposizione_turno_lavoratore;
 delimiter $$
 
 create trigger check_sovrapposizione_turno_lavoratore
@@ -177,9 +176,9 @@ begin
     end if;
 end $$
 delimiter ;
-
-/* Controlla la coerenza delle date dentro Progetto */
-drop trigger if exists check_data_stadioavanzamentoprogetto
+*/
+/* Controlla la coerenza delle date dentro Progetto 
+drop trigger if exists check_data_stadioavanzamentoprogetto;
 delimiter $$
 
 create trigger check_data_stadioavanzamentoprogetto
@@ -194,9 +193,10 @@ begin
     end if;
 end $$
 delimiter ;
+*/
 
-/* Massimo numero di lavoratori */
-drop trigger if exists check_maxlavoratori
+/* Massimo numero di lavoratori - Turno*/
+drop trigger if exists check_maxlavoratori;
 delimiter $$
 
 create trigger check_maxlavoratori
@@ -223,7 +223,40 @@ begin
 
     if differenza = 0 then
         signal sqlstate '45000'
-        set message_text = 'Lavoratore non inseribile - Numero massimo raggiunto';
+        set message_text = 'Lavoratore non inseribile - Numero massimo raggiunto per questo CaopCantiere';
+    end if;
+end $$
+delimiter ;
+
+/* Massimo numero di lavoratori */
+drop trigger if exists check_maxlavoratori;
+delimiter $$
+
+create trigger check_maxlavoratori
+before insert on Turno for each row
+begin
+
+    declare numerolavoratori integer default 1;
+    declare numeromassimolav integer default 0;
+    declare differenza integer default 0;
+
+    set numerolavoratori = (
+        select count(*) 
+        from Turno T
+        where T.Lavoro = new.Lavoro
+    );
+
+    set numeromassimolav = (
+        select MaxOperai
+        from Lavoro L
+        where L.CodLavoro = new.Lavoro
+    );
+
+    set differenza = numerolavoratori - numeromassimolav;
+
+    if differenza = 0 then
+        signal sqlstate '45000'
+        set message_text = 'Lavoratore non inseribile - Numero massimo raggiunto per questo lavoro';
     end if;
 end $$
 delimiter ;

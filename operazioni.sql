@@ -7,8 +7,8 @@ create procedure stampa_registrazioni_24 (in CodEdificio int)
 begin
     with RegistrazioniEdificio as(
         select  M.Sensore, M.ValoreX, M.ValoreY, M.ValoreZ
-        from    Sensore S inner join Misura M on S.CodSensore=M.Sensore
-        where   Edificio = _CodEdificio
+        from    Sensore S inner join Misura M on S.CodSensore = M.Sensore
+        where   S.Edificio = _CodEdificio
             and timestamp >= current_timestamp - interval 1 day
     )
 
