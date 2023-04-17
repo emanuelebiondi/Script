@@ -1,5 +1,5 @@
 use SmartBuildings;
--- SET FOREIGN_KEY_CHECKS = 0;
+--   SET FOREIGN_KEY_CHECKS = 0;
 
 set @acc_max = 4 ;
 set @est_max = 10 ;
@@ -14,8 +14,8 @@ DELIMITER //
 CREATE PROCEDURE insertRowsToMisura_Accellerometro()   
 BEGIN
 DECLARE i INT DEFAULT 1; 
-	WHILE (i <= 36) DO -- 3600 in un ora
-		-- Accellerometro
+	WHILE (i <= 36) DO --   3600 in un ora
+		--   Accellerometro
 		INSERT INTO Misura (Sensore,Timestamp,ValoreX,ValoreY,ValoreZ)
 		select 	CodSensore, current_timestamp()-interval i second, 
 				@acc_max*rand()-@acc_max/2, @acc_max*rand()-@acc_max/2, @acc_max*rand()-@acc_max/2
@@ -30,7 +30,7 @@ CREATE PROCEDURE insertRowsToMisura_Temperatura()
 BEGIN
 	DECLARE i INT DEFAULT 1; 
 		WHILE (i <= 6) DO
-			-- Temperatura
+			--   Temperatura
 			INSERT INTO Misura (Sensore,Timestamp,ValoreX,ValoreY,ValoreZ)
 			select 	CodSensore, current_timestamp()-interval 10*i minute, @temp_max*rand(), null, null
 			from Sensore s
@@ -43,7 +43,7 @@ CREATE PROCEDURE insertRowsToMisura_Pluviometro()
 BEGIN
 	DECLARE i INT DEFAULT 1; 
 		WHILE (i <= 12) DO
-			-- Temperatura
+			--   Temperatura
 			INSERT INTO Misura (Sensore,Timestamp,ValoreX,ValoreY,ValoreZ)
 			select 	CodSensore, current_timestamp()-interval 5*i minute, 1*rand(), null, null
 			from Sensore s
@@ -55,9 +55,9 @@ DELIMITER ;
 
 
 
-----------------------------------
--- LAVORATORE
-----------------------------------
+--  --  --  --  --  --  --  --  --  --  --  --  --  --  --  -- -- 
+--  LAVORATORE
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 insert into Lavoratore (CodFiscale, PagaOraria)
 values 
 	('LDATTL64L22D732G', 9),
@@ -85,18 +85,18 @@ values
 	('CRCPGB69E41I259E', 7),
 	('LSANOX78S09E236Z',  7);
 		
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 -- RESPONSABILE
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 insert into Responsabile (CodFiscale, PagaProgetto)
 values 
 	('CTNMDL85P41G224X', 10000),	
 	('LPOLTD84S41G992I', 8000),
 	('CRNRZO89L41M214D', 15000);	
 
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 -- CapoCantiere
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 insert into CapoCantiere (CodFiscale, PagaOraria, MaxOperai)
 values 
 	('CMBYZE44B15M297I', 17, 5),	
@@ -108,9 +108,9 @@ values
 	('ZLZLXH27C03D728J', 16, 3);	
 		
 
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 -- Insert AreaGeografica 
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 insert into AreaGeografica (Nome)
 values 			
 	('Nord'), 
@@ -119,9 +119,9 @@ values
 	('Sicilia'), 
 	('Sardegna'); 
 			
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 -- Insert Rischio
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 insert into Rischio (AreaGeografica, Tipo, Coefficiente)
 values
 	('Nord', 'Sismico', 7),
@@ -136,9 +136,9 @@ values
 	('Sicilia', 'Idrogeologico', 5),
 	('Sardegna', 'Idrogeologico', 7);
 
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 -- Insert Calamita
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 INSERT INTO Calamita (AreaGeografica, Tipologia, Data, LivelloIntensita, Latitudine, Longitudine)
 values
 	('Sud', 'Gelamento', '2023-02-03', 3, 15.996094, 40.287907),
@@ -166,25 +166,25 @@ values
 
 
 
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 -- Insert Edificio
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 insert into Edificio (Tipologia, DataRealizzazione, StatoEdificio, Latitudine, Longitudine, AreaGeografica)
 values 
 	('Villetta', '2020-07-13', 1, 43.640578, 10.290558, 'Centro'), -- CodEdificio = 1
 	('Condominio', '1989-05-21', 2, 38.153594, 15.660652, 'Sud'); -- CodEdificio = 2
 
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 -- Insert Piano
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 insert into Piano (Edificio, NumeroPiano, Perimetro, Area)
 values 
 	(1, 1, 68, 253), -- 1.1
 	(1, 2, 68, 253); -- 1.2
 
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 -- Insert Funzione (del Vano)
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 insert into Funzione (Nome)
 values
 	('Ingresso'),
@@ -200,9 +200,9 @@ values
 	('Disimpiego');
 
 
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 -- Insert Vano
-----------------------------------
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 insert into Vano (Edificio, Piano, Altezzamax, LunghezzaMax, LarghezzaMax, Funzione)
 values 
 	(1, 1, 2.7, 11, 10, 'SalaDaPranzo'), -- 1.1.1
@@ -219,7 +219,7 @@ values
 	(11, 1, null), -- 1.1.1.1 -- SalaDaPranzo
 	(10, 1, null), -- 1.1.1.2
 	(4, 1, 2), -- 1.1.1.3
-	(3, 1, 4), -- 1.1.1.4 --> Porta
+	(3, 1, 4), -- 1.1.1.4 -- > Porta
 	(4, 1, 5), -- 1.1.1.5
 	(10, 1, null), -- 1.1.1.6
 	
@@ -227,38 +227,38 @@ values
 	(4, 2, 3), -- 1.1.2.3
 	(7, 2, 4), -- 1.1.2.4
 	
-	(6, 3, null), -- 1.1.3.2 -- Bagno
-	(4, 3, null), -- 1.1.3.3
-	(6, 3, 4), -- 1.1.3.4
+	(6, 3, null), -- 1.1.3.2 --   Bagno
+	(4, 3, null), --   1.1.3.3
+	(6, 3, 4), --   1.1.3.4
 	
-	(6, 4, 6), -- 1.1.4.4 -- Ingresso
-	(7, 4, 5), -- 1.1.4.5
-	(3, 4, null), -- 1.1.4.6
+	(6, 4, 6), --   1.1.4.4 --   Ingresso
+	(7, 4, 5), --   1.1.4.5
+	(3, 4, null), --   1.1.4.6
 	
-	(7, 5, null), -- 1.1.5.3 -- Camera 1
-	(4, 5, 6), -- 1.1.5.4
+	(7, 5, null), --   1.1.5.3 --   Camera 1
+	(4, 5, 6), --   1.1.5.4
 	
-	(6, 6, null), -- 1.1.6.3 -- Camera 2
-	(4, 6, null), -- 1.1.6.4
+	(6, 6, null), --   1.1.6.3 --   Camera 2
+	(4, 6, null), --   1.1.6.4
 
-	(10, 7, null), 	-- 1.2.1.1 -- Mansarda
-	(11, 7, null), 	-- 1.2.1.2
-	(10, 7, null), 	-- 1.2.1.3
-	(11, 7, 8), 	-- 1.2.1.4
+	(10, 7, null), 	--   1.2.1.1 --   Mansarda
+	(11, 7, null), 	--   1.2.1.2
+	(10, 7, null), 	--   1.2.1.3
+	(11, 7, 8), 	--   1.2.1.4
 
-	(13, 8, null), -- 1.2.2.1 -- Balcone
-	(13, 8, null), -- 1.2.2.3
-	(11, 8, null); -- 1.2.2.4
+	(13, 8, null), --   1.2.2.1 --   Balcone
+	(13, 8, null), --   1.2.2.3
+	(11, 8, null); --   1.2.2.4
 
 insert into PuntoAccesso (Muro, PuntoCardinale, Tipologia)
 values
-	(4, 'E', 'Porta'), -- Vano 1-4
-	(9, 'S', 'Porta'), -- Vano 2-4
-	(12, 'S', 'Porta'), -- Vano 3-4
-	(14, 'N', 'Porta'), -- Vano 5-4
-	(13, 'N', 'Porta'), -- Vano 6-4
-	(15, 'E', 'Porta'), -- Vano 5-null
-	(23, 'E', 'Porta'); -- Vano 7-8
+	(4, 'E', 'Porta'), --   Vano 1-4
+	(9, 'S', 'Porta'), --   Vano 2-4
+	(12, 'S', 'Porta'), --   Vano 3-4
+	(14, 'N', 'Porta'), --   Vano 5-4
+	(13, 'N', 'Porta'), --   Vano 6-4
+	(15, 'E', 'Porta'), --   Vano 5-null
+	(23, 'E', 'Porta'); --   Vano 7-8
 
 insert into Finestra (Muro, PuntoCardinale)
 values
@@ -275,14 +275,14 @@ values
 
 insert into Progetto (Edificio, DataPresentazione, DataApprovazione, DataInizio, StimaFine, DataFine)
 values
-	(1, '2022-01-10', '2022-02-10', '2022-03-15', '2022-06-20', '2022-05-22'); -- Progetto 1 
-	--(1, '2023-01-10', '2023-01-26', '2023-02-04', '2023-07-13', null); -- Progetto 2 edif.1
+	(1, '2022-01-10', '2022-02-10', '2022-03-15', '2022-06-20', '2022-05-22'); --   Progetto 1 
+	--  (1, '2023-01-10', '2023-01-26', '2023-02-04', '2023-07-13', null); --   Progetto 2 edif.1
 
 
 insert into StadioAvanzamentoProgetto (Progetto, Responsabile, DataCompletamento)
 values
-	(1, 'CTNMDL85P41G224X', '2022-04-24'), -- 1 stadio
-	(1, 'LPOLTD84S41G992I', '2022-05-22'); -- 2 stadio
+	(1, 'CTNMDL85P41G224X', '2022-04-24'), --   1 stadio
+	(1, 'LPOLTD84S41G992I', '2022-05-22'); --   2 stadio
 
 insert into Lavoro (Stadio, DataInizio, DataFine, Descrizione, MaxOperai)
 values
@@ -349,39 +349,39 @@ values
 	(5, '2022-04-08 08:00:00', '2022-04-08 16:00:00', 'VRNGTN93E06G258H', 'HQTBHM90M51E819K'),
 	(5, '2022-04-12 08:00:00', '2022-04-12 16:00:00', 'MDRGFR79P16L019O', 'HQTBHM90M51E819K'),
 	(5, '2022-04-12 08:00:00', '2022-04-12 16:00:00', 'VRNGTN93E06G258H', 'HQTBHM90M51E819K'),
-	--(1, '2022-04-13', '2022-04-20', 'Verniciatura Edificio', 6),
+	--  (1, '2022-04-13', '2022-04-20', 'Verniciatura Edificio', 6),
 	(6, '2022-04-13 08:00:00', '2022-04-13 16:00:00', 'VRNGTN93E06G258H', 'HQTBHM90M51E819K'),
 	(6, '2022-04-14 08:00:00', '2022-04-14 16:00:00', 'VRNGTN93E06G258H', 'HQTBHM90M51E819K'),
 	(6, '2022-04-15 08:00:00', '2022-04-15 16:00:00', 'VRNGTN93E06G258H', 'HQTBHM90M51E819K'),
 	(6, '2022-04-16 08:00:00', '2022-04-16 16:00:00', 'VRNGTN93E06G258H', 'HQTBHM90M51E819K'),
 	(6, '2022-04-17 08:00:00', '2022-04-17 16:00:00', 'VRNGTN93E06G258H', 'HQTBHM90M51E819K'),
 	(6, '2022-04-20 08:00:00', '2022-04-20 16:00:00', 'VRNGTN93E06G258H', 'HQTBHM90M51E819K'),
-	--(1, '2022-04-21', '2022-04-24', 'Smontaggio Ponteggi', 4),
+	--  (1, '2022-04-21', '2022-04-24', 'Smontaggio Ponteggi', 4),
 	(7, '2022-04-21 08:00:00', '2022-04-21 16:00:00', 'BTTRLD66R18B906N', 'ZLZLXH27C03D728J'),
 	(7, '2022-04-22 08:00:00', '2022-04-22 16:00:00', 'BTTRLD66R18B906N', 'ZLZLXH27C03D728J'),
 	(7, '2022-04-24 08:00:00', '2022-04-24 16:00:00', 'BTTRLD66R18B906N', 'ZLZLXH27C03D728J'),
-	--(2, '2022-04-25', '2022-04-28', 'Rimozione Pavimento', 4),
+	--  (2, '2022-04-25', '2022-04-28', 'Rimozione Pavimento', 4),
 	(8, '2022-04-25 08:00:00', '2022-04-25 16:00:00', 'DNNCLL92C17H221N', 'FMLSBX79A21I848T'),
 	(8, '2022-04-26 08:00:00', '2022-04-26 16:00:00', 'DNNCLL92C17H221N', 'FMLSBX79A21I848T'),
 	(8, '2022-04-27 08:00:00', '2022-04-27 16:00:00', 'DNNCLL92C17H221N', 'FMLSBX79A21I848T'),
 	(8, '2022-04-28 08:00:00', '2022-04-28 16:00:00', 'DNNCLL92C17H221N', 'FMLSBX79A21I848T'),
-	--(2, '2022-05-01', '2022-05-06', 'Rifacimento Massetto', 3),
+	--  (2, '2022-05-01', '2022-05-06', 'Rifacimento Massetto', 3),
 	(9, '2022-05-01 08:00:00', '2022-05-01 16:00:00', 'LSANOX78S09E236Z', 'FJYSCG79C57C125P'),
 	(9, '2022-06-01 08:00:00', '2022-06-01 16:00:00', 'LSANOX78S09E236Z', 'FJYSCG79C57C125P'),
-	--(2, '2022-05-07', '2022-05-10', 'Messa in posa pavimento', 4),
+	--  (2, '2022-05-07', '2022-05-10', 'Messa in posa pavimento', 4),
 	(10, '2022-05-07 08:00:00', '2022-05-07 16:00:00', 'DNNCLL92C17H221N', 'CMBYZE44B15M297I'),
 	(10, '2022-04-08 08:00:00', '2022-05-08 16:00:00', 'DNNCLL92C17H221N', 'CMBYZE44B15M297I'),
 	(10, '2022-05-09 08:00:00', '2022-05-09 16:00:00', 'DNNCLL92C17H221N', 'CMBYZE44B15M297I'),
 	(10, '2022-05-10 08:00:00', '2022-05-10 16:00:00', 'DNNCLL92C17H221N', 'CMBYZE44B15M297I'),
-	--(2, '2022-05-11', '2022-05-15', 'Verniciatura', 3),
+	--  (2, '2022-05-11', '2022-05-15', 'Verniciatura', 3),
 	(11, '2022-05-11 08:00:00', '2022-05-11 16:00:00', 'LBASGN94D01E457P', 'FJYSCG79C57C125P'),
 	(11, '2022-05-12 08:00:00', '2022-05-12 16:00:00', 'LBASGN94D01E457P', 'FJYSCG79C57C125P'),
 	(11, '2022-05-15 08:00:00', '2022-05-15 16:00:00', 'LBASGN94D01E457P', 'FJYSCG79C57C125P'),
-	--(2, '2022-05-16', '2022-05-18', 'Verniciatura', 2),
+	--  (2, '2022-05-16', '2022-05-18', 'Verniciatura', 2),
 	(12, '2022-05-16 08:00:00', '2022-05-16 16:00:00', 'LBASGN94D01E457P', 'FJYSCG79C57C125P'),
 	(12, '2022-05-17 08:00:00', '2022-05-17 16:00:00', 'LBASGN94D01E457P', 'FJYSCG79C57C125P'),
 	(12, '2022-05-18 08:00:00', '2022-05-18 16:00:00', 'LBASGN94D01E457P', 'FJYSCG79C57C125P'),
-	--(2, '2022-05-19', '2022-05-22', 'Verniciatura', 3);
+	--  (2, '2022-05-19', '2022-05-22', 'Verniciatura', 3);
 	(13, '2022-05-19 08:00:00', '2022-05-19 16:00:00', 'LBASGN94D01E457P', 'FJYSCG79C57C125P'),
 	(13, '2022-05-21 08:00:00', '2022-05-21 16:00:00', 'LBASGN94D01E457P', 'FJYSCG79C57C125P'),
 	(13, '2022-05-22 08:00:00', '2022-05-22 16:00:00', 'LBASGN94D01E457P', 'FJYSCG79C57C125P');
@@ -389,16 +389,16 @@ values
 
 insert into Materiale (Lavoro, CodLotto, Fornitore, DataAcquisto, Quantita, CostoLotto)
 values
-	(2, 1, 'XXX', '2022-02-10', 3, 300), -- Messetto
-	(3, 2, 'XXX', '2022-02-10', 2, 2000), -- Pavimento
-	(4, 3, 'YYY', '2022-02-10', 100, 5000), -- Ponteggi
-	(6, 4, 'XXX', '2022-02-10', 10, 60 ), -- Vernice
+	(2, 1, 'XXX', '2022-02-10', 3, 300), --   Messetto
+	(3, 2, 'XXX', '2022-02-10', 2, 2000), --   Pavimento
+	(4, 3, 'YYY', '2022-02-10', 100, 5000), --   Ponteggi
+	(6, 4, 'XXX', '2022-02-10', 10, 60 ), --   Vernice
 
-	(8, 5, 'XXX', '2022-02-10', 3, 300), -- Messetto
-	(10, 6, 'XXX', '2022-02-10', 2, 1000 ), -- Pavimento
-	(11, 7, 'KKK', '2022-02-10', 3, 40 ), -- Vernice
-	(12, 8, 'KKK', '2022-02-10', 6, 20 ), -- Vernice
-	(13, 9, 'KKK', '2022-02-10', 10, 35 ); -- Vernice
+	(8, 5, 'XXX', '2022-02-10', 3, 300), --   Messetto
+	(10, 6, 'XXX', '2022-02-10', 2, 1000 ), --   Pavimento
+	(11, 7, 'KKK', '2022-02-10', 3, 40 ), --   Vernice
+	(12, 8, 'KKK', '2022-02-10', 6, 20 ), --   Vernice
+	(13, 9, 'KKK', '2022-02-10', 10, 35 ); --   Vernice
 
 insert into Mattone (CodLotto, Fornitore, Alveolatura, Composizione, Isolante)
 values
@@ -424,13 +424,13 @@ values
 
 insert into Sensore (Muro, Tipologia, Soglia, Latitudine, Longitudine)
 values
-	(23, 'Pluviometro', 10, 43.640578, 10.290558), -- 1
-	(24, 'Temperatura', 40, 43.640578, 10.290558), -- 2
-	(10, 'Temperatura', 40, 43.640578, 10.290558), -- 3
-	(2, 'Temperatura', 46, 43.640578, 10.290558), -- 4
-	(5, 'Temperatura', 46, 43.640578, 10.290558), -- 5
-	(15, 'Allungamento', 1.00, 43.640578, 10.290558), -- 6 cm
-	(23, 'Accellerometro', 1.9, 43.640578, 10.290558); -- 7
+	(23, 'Pluviometro', 10, 43.640578, 10.290558), --   1
+	(24, 'Temperatura', 40, 43.640578, 10.290558), --   2
+	(10, 'Temperatura', 40, 43.640578, 10.290558), --   3
+	(2, 'Temperatura', 46, 43.640578, 10.290558), --   4
+	(5, 'Temperatura', 46, 43.640578, 10.290558), --   5
+	(15, 'Allungamento', 1.00, 43.640578, 10.290558), --   6 cm
+	(23, 'Accelerometro', 1.9, 43.640578, 10.290558); --   7
 
 
 INSERT INTO Misura (Sensore,Timestamp,ValoreX,ValoreY,ValoreZ)
