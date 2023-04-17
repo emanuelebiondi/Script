@@ -151,7 +151,7 @@ CREATE TABLE `Muro` (
     `CodMuro` INT NOT NULL AUTO_INCREMENT ,
     `Lunghezza` DECIMAL(4,2) NOT NULL,
     `Vano1` INT NOT NULL,
-    `Vano2` INT NOT NULL,
+    `Vano2` INT NULL,
     PRIMARY KEY (`CodMuro`),
     INDEX `fk_Muro_Vano1_idx` (`Vano1` ASC) VISIBLE,
     INDEX `fk_Muro_Vano2_idx` (`Vano2` ASC) VISIBLE,
@@ -176,9 +176,9 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `PuntoAccesso`;
 CREATE TABLE `PuntoAccesso` (
     `CodPuntoAccesso` INT NOT NULL AUTO_INCREMENT,
+    `Muro` INT NOT NULL,
     `PuntoCardinale` VARCHAR(1) NOT NULL,
     `Tipologia` VARCHAR(45) NOT NULL,
-    `Muro` INT NOT NULL,
     PRIMARY KEY (`CodPuntoAccesso`),
     INDEX `fk_PuntoAccesso_Muro_idx` (`Muro` ASC) VISIBLE,
     CONSTRAINT `fk_PuntoAccesso_Muro`
