@@ -249,6 +249,11 @@ begin
         select count(*) 
         from Turno T
         where T.Lavoro = new.Lavoro
+	    AND DAY(New.TimestampInizio) = ALL (
+                    SELECT DAY(T1.TimestampInizio) 
+                    FROM Turno T1
+                    WHERE T1.Lavoro = T.Lavoro
+                )
     );
 
     set numeromassimolav = (
