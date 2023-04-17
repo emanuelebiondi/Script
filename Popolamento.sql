@@ -346,8 +346,63 @@ values
 	(13, '2022-05-22 08:00:00', '2022-05-22 16:00:00', 'LBASGN94D01E457P', 'FJYSCG79C57C125P');
 
 
+insert into Materiale (Lavoro, CodLotto, Fornitore, DataAcquisto, Quantita, CostoLotto)
+values
+	(2, 1, 'XXX', '2022-02-10', 3, 300), -- Messetto
+	(3, 2, 'XXX', '2022-02-10', 2, 2000), -- Pavimento
+	(4, 3, 'YYY', '2022-02-10', 100, 5000), -- Ponteggi
+	(6, 4, 'XXX', '2022-02-10', 10, 60 ), -- Vernice
+
+	(8, 5, 'XXX', '2022-02-10', 3, 300), -- Messetto
+	(10, 6, 'XXX', '2022-02-10', 2, 1000 ), -- Pavimento
+	(11, 7, 'KKK', '2022-02-10', 3, 40 ), -- Vernice
+	(12, 8, 'KKK', '2022-02-10', 6, 20 ), -- Vernice
+	(13, 9, 'KKK', '2022-02-10', 10, 35 ); -- Vernice
+
+insert into Mattone (CodLotto, Fornitore, Alveolatura, Composizione, Isolante)
+values
+	(1, 'XXX', 'asasasas', 'sasasas', true), 
+	(5, 'XXX', 'asasasas', 'dhadada', true);
+
+insert into Piastrella (CodLotto, Fornitore, Tipo, Fuga, Materiale, X, Y, Z)
+values
+	(2, 'XXX', 'frfr', 0.01, 'Legno', 0.4, 1.0, 0.01), 
+	(6, 'XXX', 'frfdasd', 0.01, 'Coccio', 0.3, 0.3, 0.1);
+
+insert into MaterialeGenerico (CodLotto, Fornitore, Descrizione, Funzione, X, Y, Z)
+values
+	(3, 'YYY', 'Ponteggi', 'Ponteggi', null, null, null);
+
+insert into Intonaco (CodLotto, Fornitore, Tipo, Spessore)
+values
+	(4, 'XXX', 'Vernice', 0.01),
+	(7, 'KKK', 'Vernice', 0.01),
+	(8, 'KKK', 'Vernice', 0.01),
+	(9, 'KKK', 'Vernice', 0.01);
 
 
+insert into Sensore (Muro, Tipologia, Soglia, Longitudine, Latitudine)
+values
+	(35, 'Pluviometro', 10, 43.640578, 10.290558), -- 1
+	(9, 'Temperatura', 40, 43.640578, 10.290558), -- 2
+	(2, 'Temperatura', 40, 43.640578, 10.290558), -- 3
+	(36, 'Temperatura', 46, 43.640578, 10.290558), -- 4
+	(18, 'Temperatura', 46, 43.640578, 10.290558), -- 5
+	(20, 'Allungamento', 1.00, 43.640578, 10.290558), -- 6
+	(35, 'Giroscopio', 1.00, 43.640578, 10.290558); -- 7
+
+
+
+-- truncate table Misura;
+set @acc_max = 4 ;
+set @est_max = 10 ;
+set @temp_max = 15 ;
+
+INSERT INTO Misura (id_sensore,dataora,valore_x,valore_y,valore_z)
+select 	id_sensore, current_timestamp()-interval 3 second, 
+		@acc_max*rand()-@acc_max/2, @acc_max*rand()-@acc_max/2, @acc_max*rand()-@acc_max/2
+from Sensore s
+where s.tipo_sensore='ACCELEROMETRO' ;
 
 
 
