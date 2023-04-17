@@ -518,7 +518,7 @@ CREATE TABLE IF NOT EXISTS `Turno` (
     `Lavoro` INT NOT NULL,
     `CapoCantiere` CHAR(16) NOT NULL,
     `Lavoratore` CHAR(16) NOT NULL,
-    PRIMARY KEY (`TimestampInizio`, `TimestampFine`, `Lavoro`),
+    PRIMARY KEY (`TimestampInizio`, `TimestampFine`, `Lavoro`, `Lavoratore`),
     INDEX `fk_Turno_Lavoro_idx` (`Lavoro` ASC ) VISIBLE,
     INDEX `fk_CapoCantiere_Turno_idx` (`CapoCantiere` ASC) VISIBLE,
     INDEX `fk_Lavoratore_Turno_idx` (`Lavoratore` ASC) VISIBLE,
