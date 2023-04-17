@@ -450,3 +450,4 @@ INSERT INTO Alert (Sensore,Timestamp, ValoreSuperamento)
 	select m.Sensore, m.Timestamp, IF(m.ValoreX <= S.Soglia, IF(m.ValoreY <= S.Soglia, IF(m.ValoreZ <= s.Soglia, NULL, m.ValoreZ), m.ValoreY), m.ValoreX)
 	from Misura m
 	inner join Sensore s on s.codSensore = m.Sensore
+	where (m.ValoreX > s.Soglia or m.ValoreY > s.Soglia or m.ValoreZ > s.Soglia);
