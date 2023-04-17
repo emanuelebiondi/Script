@@ -17,6 +17,8 @@ BEGIN
 END $$
 DELIMITER ;
 
+
+
 /* Vincolo Finestra.PuntoCardinale */
 DELIMITER $$
 DROP TRIGGER IF EXISTS check_puntocardinale_finestra;
@@ -47,6 +49,21 @@ BEGIN
     THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Tipologia di Calamita non valida!';
+    END IF;
+END $$
+DELIMITER;
+
+/* Vincolo PuntoAccesso.Tipologia */
+DELIMITER $$
+DROP TRIGGER IF EXISTS check_tipologia_calamita;
+CREATE TRIGGER check_tipologia_calamita
+BEFORE INSERT ON Calamita
+FOR EACH ROW
+BEGIN
+    IF  NEW.Tipologia <> 'Porta' AND NEW.Tipologia <> 'Arco' AND NEW.Tipologia <> 'AccessoSenzaSerramento' AND NEW.Tipologia <> 'Portafinestra'
+    THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Tipologia di PuntoAccesso non valida!';
     END IF;
 END $$
 DELIMITER;
