@@ -458,7 +458,7 @@ call insertRowsToMisura_Pluviometro();
 
 
 INSERT INTO Alert (Sensore,Timestamp, ValoreSuperamento)
-	select m.Sensore, m.Timestamp 
+	select m.Sensore, m.Timestamp, IF(m.ValoreX IS NULL, IF(m.ValoreY IS NULL, m.ValoreZ, m.ValoreY), m.ValoreX)
 	from Misura m
 	inner join Sensore s on s.codSensore = m.Sensore
 	where
