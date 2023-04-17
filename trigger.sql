@@ -211,12 +211,18 @@ begin
         select count(*) 
         from Turno T
         where T.CapoCantiere = new.CapoCantiere
+	    AND DAY(New.TimestampInizio) = ALL (
+                    SELECT DAY(T1.TimestampInizio) 
+                    FROM Turno T1
+                    WHERE T1.CapoCantiere = T.CapoCantiere
+                )
     );
 
     set numeromassimolav = (
         select MaxOperai
         from CapoCantiere C
-        where C.CodFiscale = new.CapoCantiere
+        where C.CodFiscale = new.CapoCantiere 
+	    and 
     );
 
     set differenza = numerolavoratori - numeromassimolav;
