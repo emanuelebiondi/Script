@@ -66,12 +66,12 @@ begin
 end $$
 delimiter ;
 
---OP.4 Inserimento nuovo tipo materiale generico
+--OP.4 Inserimento nuovo tipo di materiale generico
 
-drop procedure if exists NuovoMateriale
+drop procedure if exists nuovo_materiale
 delimiter $$
 
-create procedure NuovoMateriale (in _CodLotto int, in _Fornitore VARCHAR(45), in _DataAcquisto DATE, in _Quantita int, in _CostoLotto decimal(10,2), in _Tipologia varchar(45)create procedure nuovo_materiale (in _CodLotto int, in _Fornitore VARCHAR(45), in _DataAcquisto DATE, in _Quantita int, in _CostoLotto decimal(10,2), in _Tipologia varchar(45), in _Descrizione varchar(255), in _Funzione varchar(45), in _X int, in _Y int, in _Z int)
+create procedure nuovo_materiale (in _CodLotto int, in _Fornitore VARCHAR(45), in _DataAcquisto DATE, in _Quantita int, in _CostoLotto decimal(10,2), in _Tipologia varchar(45), in _Descrizione varchar(255), in _Funzione varchar(45), in _X int, in _Y int, in _Z int)
 begin
     insert into Materiale
     values (_CodLotto, _Fornitore, _DataAcquisto, _Quantita, _CostoLotto, _Tipologia);
