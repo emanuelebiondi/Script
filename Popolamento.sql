@@ -3,7 +3,7 @@ use SmartBuildings;
 
 set @acc_max = 4 ;
 set @est_max = 10 ;
-set @temp_max = 15 ;
+set @temp_max = 40 ;
 
 
 DROP PROCEDURE IF EXISTS insertRowsToMisura_Accellerometro;
@@ -457,7 +457,7 @@ call insertRowsToMisura_Temperatura();
 call insertRowsToMisura_Pluviometro();
 
 
-INSERT INTO Alert (Sensore,Timestamp)
+INSERT INTO Alert (Sensore,Timestamp, ValoreSuperamento)
 	select m.Sensore, m.Timestamp 
 	from Misura m
 	inner join Sensore s on s.codSensore = m.Sensore
