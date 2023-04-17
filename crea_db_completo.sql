@@ -214,12 +214,12 @@ ENGINE = InnoDB;
 ---------------------------------
 DROP TABLE IF EXISTS `Sensore`;
 CREATE TABLE `Sensore`(
+    `Muro` INT NOT NULL,
     `CodSensore` INT NOT NULL AUTO_INCREMENT,
     `Tipologia` VARCHAR(45) NOT NULL,
     `Longitudine` DECIMAL(9,6) NOT NULL,
     `Latitudine` DECIMAL(9,6) NOT NULL,
     `Soglia` FLOAT NOT NULL,
-    `Muro` INT NOT NULL,
     PRIMARY KEY (`CodSensore`),
     INDEX `fk_Sensore_Muro_idx` (`Muro` ASC) VISIBLE,
     CONSTRAINT chk_coords CHECK (Latitudine between -90 and 90 and Longitudine between -180 and 180),
@@ -297,17 +297,107 @@ CREATE TABLE IF NOT EXISTS `Progetto`(
 ENGINE = InnoDB;
 
 ---------------------------------
--- CREATE TABLE StatoAvanzamentoProgetto 
+-- CREATE TABLE Responsabile
+---------------------------------
+DROP TABLE IF EXISTS `Responsabile`;
+CREATE TABLE IF NOT EXISTS `Responsabile` (
+    `CodFiscale` CHAR(16) NOT NULL,
+    `PagaProgetto`  FLOAT NOT NULL,
+    PRIMARY KEY (`CodFiscale`)
+)
+ENGINE = InnoDB;
+
+
+---------------------------------
+-- CREATE TABLE StadioAvanzamentoProgetto
+---------------------------------
+DROP TABLE IF EXISTS `StadioAvanzamentoProgetto`;
+CREATE TABLE IF NOT EXISTS `StadioAvanzamentoProgetto`(
+    `CodStadio` INT NOT NULL AUTO_INCREMENT,
+    `Progetto` INT NOT NULL,
+    `Responsabile` CHAR(16) NOT NULL,
+    `DataCompletamento` DATE NULL,
+    PRIMARY KEY (`CodStadio`, `Progetto`),
+    INDEX `fk_Progetto_StadioAvanzamentoProgetto_idx` (`Progetto` ASC) VISIBLE,
+    INDEX `fk_Responsabile_StadioAvanzamentoProgetto_idx` (`Responsabile` ASC) VISIBLE,
+    CONSTRAINT `fk_Progetto_StadioAvanzamentoProgetto`
+        FOREIGN KEY (`Progetto`)
+        REFERENCES `Progetto`(`CodProgetto`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION,
+    CONSTRAINT `fk_Responsabile_StadioAvanzamentoProgetto`
+        FOREIGN KEY (`Responsabile`)
+        REFERENCES `Responsabile`(`CodFiscale`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
+)
+ENGINE = InnoDB;
+
+
+
+---------------------------------
+-- CREATE TABLE Capocantiere
+---------------------------------
+DROP TABLE IF EXISTS `CapoCantiere`;
+CREATE TABLE IF NOT EXISTS `CapoCantiere` (
+    `CodFiscale` CHAR(16) NOT NULL,
+    `PagaOraria` FLOAT NOT NULL,
+    `MaxOperai` INT NULL,
+    PRIMARY KEY (`CodFiscale`)
+)
+ENGINE = InnoDB;
+
+
+---------------------------------
+-- CREATE TABLE Lavoratore
+---------------------------------
+DROP TABLE IF EXISTS `Lavoratore`;
+CREATE TABLE IF NOT EXISTS `Lavoratore` (
+    `CodFiscale` CHAR(16) NOT NULL,
+    `PagaOraria` FLOAT NOT NULL,
+    PRIMARY KEY (`CodFiscale`)
+)
+ENGINE = InnoDB;
+
+---------------------------------
+-- CREATE TABLE Lavoro
+---------------------------------
+DROP TABLE IF EXISTS `Lavoro`;
+CREATE TABLE IF NOT EXISTS `Lavoro` (
+    `CodLavoro` INT NOT NULL AUTO_INCREMENT,
+    `Stadio` INT NOT NULL,
+    `DataInizio` DATE NULL,
+    `DataFine` DATE NULL,
+    `Descrizione` VARCHAR(255) NOT NULL,
+    `MaxOperai` INT NULL,
+    PRIMARY KEY (`CodLavoro`),
+    INDEX `fk_StadioAvanzamentoProgetto_Lavoro_idx` (`Stadio` ASC) VISIBLE,
+    CONSTRAINT `fk_StadioAvanzamentoProgetto_Lavoro`
+        FOREIGN KEY (`Stadio`)
+        REFERENCES `StadioAvanzamentoProgetto`(`CodStadio`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
+)
+ENGINE = InnoDB;
+
+---------------------------------
+-- CREATE TABLE Materiale 
 ---------------------------------
 DROP TABLE IF EXISTS `Materiale`;
 CREATE TABLE `Materiale` (
+    `Lavoro` INT NOT NULL,
     `CodLotto` INT NOT NULL,
     `Fornitore` VARCHAR(45) NOT NULL,
     `DataAcquisto` DATE NOT NULL,
     `Quantita` INT NOT NULL,
     `CostoLotto` DECIMAL(10,2) NULL NOT NULL,
-    `Tipologia` VARCHAR(45) NOT NULL,
-    PRIMARY KEY (`CodLotto`,`Fornitore`)
+    PRIMARY KEY (`CodLotto`,`Fornitore`),
+    INDEX `fk_Materiale_Lavoro_idx` (`Lavoro` ASC) VISIBLE,
+    CONSTRAINT `fk_Materiale_Lavoro`
+        FOREIGN KEY (`Lavoro`)
+        REFERENCES `Lavoro` (`CodLavoro`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
 )
 ENGINE = InnoDB;
 
@@ -409,9 +499,9 @@ CREATE TABLE `MaterialeGenerico` (
     `Fornitore` VARCHAR(45) NOT NULL,
     `Descrizione` VARCHAR(255) NOT NULL,
     `Funzione` VARCHAR(45) NOT NULL,
-    `X` FLOAT NOT NULL,
-    `Y` FLOAT NOT NULL,
-    `Z` FLOAT NOT NULL,
+    `X` FLOAT NULL,
+    `Y` FLOAT NULL,
+    `Z` FLOAT NULL,
     PRIMARY KEY (`CodLotto`,`Fornitore`),
     INDEX `fk_MaterialeGenerico_Materiale_idx`(`CodLotto` ASC,`Fornitore` ASC),
     CONSTRAINT `fk_MaterialeGenerico_Materiale`
@@ -423,89 +513,7 @@ CREATE TABLE `MaterialeGenerico` (
 ENGINE = InnoDB;
 
 
----------------------------------
--- CREATE TABLE Responsabile
----------------------------------
-DROP TABLE IF EXISTS `Responsabile`;
-CREATE TABLE IF NOT EXISTS `Responsabile` (
-    `CodFiscale` CHAR(16) NOT NULL,
-    `PagaProgetto`  FLOAT NOT NULL,
-    PRIMARY KEY (`CodFiscale`)
-)
-ENGINE = InnoDB;
 
-
----------------------------------
--- CREATE TABLE StadioAvanzamentoProgetto
----------------------------------
-DROP TABLE IF EXISTS `StadioAvanzamentoProgetto`;
-CREATE TABLE IF NOT EXISTS `StadioAvanzamentoProgetto`(
-    `CodStadio` INT NOT NULL AUTO_INCREMENT,
-    `Progetto` INT NOT NULL,
-    `Responsabile` CHAR(16) NOT NULL,
-    `DataCompletamento` DATE NULL,
-    PRIMARY KEY (`CodStadio`, `Progetto`),
-    INDEX `fk_Progetto_StadioAvanzamentoProgetto_idx` (`Progetto` ASC) VISIBLE,
-    INDEX `fk_Responsabile_StadioAvanzamentoProgetto_idx` (`Responsabile` ASC) VISIBLE,
-    CONSTRAINT `fk_Progetto_StadioAvanzamentoProgetto`
-        FOREIGN KEY (`Progetto`)
-        REFERENCES `Progetto`(`CodProgetto`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION,
-    CONSTRAINT `fk_Responsabile_StadioAvanzamentoProgetto`
-        FOREIGN KEY (`Responsabile`)
-        REFERENCES `Responsabile`(`CodFiscale`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION
-)
-ENGINE = InnoDB;
-
-
----------------------------------
--- CREATE TABLE Lavoro
----------------------------------
-DROP TABLE IF EXISTS `Lavoro`;
-CREATE TABLE IF NOT EXISTS `Lavoro` (
-    `CodLavoro` INT NOT NULL AUTO_INCREMENT,
-    `Stadio` INT NOT NULL,
-    `DataInizio` DATE NULL,
-    `DataFine` DATE NULL,
-    `Descrizione` VARCHAR(255) NOT NULL,
-    `MaxOperai` INT NULL,
-    PRIMARY KEY (`CodLavoro`),
-    INDEX `fk_StadioAvanzamentoProgetto_Lavoro_idx` (`Stadio` ASC) VISIBLE,
-    CONSTRAINT `fk_StadioAvanzamentoProgetto_Lavoro`
-        FOREIGN KEY (`Stadio`)
-        REFERENCES `StadioAvanzamentoProgetto`(`CodStadio`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION
-)
-ENGINE = InnoDB;
-
-
----------------------------------
--- CREATE TABLE Capocantiere
----------------------------------
-DROP TABLE IF EXISTS `CapoCantiere`;
-CREATE TABLE IF NOT EXISTS `CapoCantiere` (
-    `CodFiscale` CHAR(16) NOT NULL,
-    `PagaOraria` FLOAT NOT NULL,
-    `MaxOperai` INT NULL,
-    PRIMARY KEY (`CodFiscale`)
-)
-ENGINE = InnoDB;
-
-
----------------------------------
--- CREATE TABLE Lavoratore
----------------------------------
-DROP TABLE IF EXISTS `Lavoratore`;
-CREATE TABLE IF NOT EXISTS `Lavoratore` (
-    `CodFiscale` CHAR(16) NOT NULL,
-    `PagaOraria` FLOAT NOT NULL,
-    PRIMARY KEY (`CodFiscale`)
-)
-ENGINE = InnoDB;
 
 
 ---------------------------------
