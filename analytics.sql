@@ -3,6 +3,7 @@ DELIMITER $$
 CREATE PROCEDURE ConsigliIntervento(IN CodEdificio_f INT)
     BEGIN
         DECLARE fattoreDiRischio FLOAT;
+        DECLARE ContaPiani INT;
         SET fattoreDiRischio =(
             SELECT r.Coefficiente
             FROM Calamita c INNER JOIN Edificio e ON c.AreaGeografica = e.AreaGeografica
@@ -13,7 +14,6 @@ CREATE PROCEDURE ConsigliIntervento(IN CodEdificio_f INT)
                     WHERE ed.CodEdificio = CodEdificio_f AND cd.Tipologia = "Sismico"
                 )
         );
-        DECLARE ContaPiani INT;
         SET ContaPiani = (
             SELECT COUNT(*)
             FROM Piano
@@ -25,7 +25,7 @@ CREATE PROCEDURE ConsigliIntervento(IN CodEdificio_f INT)
             WHERE v.Edificio = CodEdificio_f
         ),
         SensoriAllarmati AS(
-            SELECT s.CodSensore, s.Muro, s.Tipologia, s.Soglia s.Longitudine, s.Latitudine, a.TimeStamp, a.ValoreSuperamento
+            SELECT s.CodSensore, s.Muro, s.Tipologia, s.Soglia, s.Longitudine, s.Latitudine, a.TimeStamp, a.ValoreSuperamento
             FROM Sensore s INNER JOIN Alert a ON s.CodSensore = a.Sensore
             WHERE (
                 s.Tipologia = "Giroscopio" OR
@@ -53,8 +53,8 @@ CREATE PROCEDURE ConsigliIntervento(IN CodEdificio_f INT)
              OR ar.Tipologia = "Accelerometro"
              ) AND ar.Piano < ContaPiani, CONCAT("Consigliata ristrutturazione del solaio del piano",ar.Piano),
             IF ((ar.Tipologia = "Giroscopio"
-             OR ar.Tipologia = "Accelerometro") 
-             AND ar.Piano = ContaPiani, CONCAT("Consigliata ristrutturazione tetto"
+             OR ar.Tipologia = "Accelerometro")
+             AND ar.Piano = ContaPiani, CONCAT("Consigliata ristrutturazione tetto")
              , CONCAT("Ristrutturazione muro", ar.CodMuro)))
             ) AS Suggerimento,(
                 IF (ar.DannoPerc BETWEEN 1 AND 20, "120 giorni",
@@ -64,9 +64,9 @@ CREATE PROCEDURE ConsigliIntervento(IN CodEdificio_f INT)
                 IF (ar.DannoPerc BETWEEN 1 AND 20, "10 giorni",
                 "Iniziare i lavori il prima possibile")))))
                 ) AS TemporisticaInterventi
-            )
+            
             FROM AlertRecenti ar;
-    END $$
+    END $$
 DELIMITER;
 
 DROP PROCEDURE IF EXISTS StimaDanni;
