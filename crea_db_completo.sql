@@ -541,6 +541,5 @@ CREATE TABLE IF NOT EXISTS `Turno` (
         FOREIGN KEY (`Lavoratore`)
         REFERENCES `Lavoratore` (`CodFiscale`)
         ON DELETE NO ACTION
-        ON UPDATE NO ACTION
 )
 ENGINE = InnoDB;
