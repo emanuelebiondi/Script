@@ -391,6 +391,9 @@ values
 	(20, 'Allungamento', 1.00, 43.640578, 10.290558), -- 6
 	(35, 'Giroscopio', 1.00, 43.640578, 10.290558); -- 7
 
+insert into Misura(Sensore, Timestamp, ValoreX, ValoreY, ValoreZ)
+values
+	(1, '2022');
 
 
 -- truncate table Misura;
@@ -398,11 +401,13 @@ set @acc_max = 4 ;
 set @est_max = 10 ;
 set @temp_max = 15 ;
 
-INSERT INTO Misura (id_sensore,dataora,valore_x,valore_y,valore_z)
-select 	id_sensore, current_timestamp()-interval 3 second, 
-		@acc_max*rand()-@acc_max/2, @acc_max*rand()-@acc_max/2, @acc_max*rand()-@acc_max/2
-from Sensore s
-where s.tipo_sensore='ACCELEROMETRO' ;
+
+
+INSERT INTO Misura (Sensore,Timestamp,ValoreX,ValoreY,ValoreZ)
+	select 	CodSensore, current_timestamp()-interval 3 second, 
+			@acc_max*rand()-@acc_max/2, @acc_max*rand()-@acc_max/2, @acc_max*rand()-@acc_max/2
+	from Sensore s
+	where s.Tipologia='Accellerometro' ;
 
 
 
