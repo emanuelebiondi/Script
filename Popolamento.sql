@@ -253,28 +253,25 @@ values
 insert into PuntoAccesso (Muro, PuntoCardinale, Tipologia)
 values
 	(4, 'E', 'Porta'), -- Vano 1-4
-	(10, 'S', 'Porta'), -- Vano 2-4
-	(14, 'S', 'Porta'), -- Vano 3-4
-	(22, 'N', 'Porta'), -- Vano 5-4
-	(26, 'N', 'Porta'), -- Vano 6-4
-	(20, 'E', 'Porta'), -- Vano 5-null
-	(32, 'E', 'Porta'); -- Vano 7-8
+	(9, 'S', 'Porta'), -- Vano 2-4
+	(12, 'S', 'Porta'), -- Vano 3-4
+	(14, 'N', 'Porta'), -- Vano 5-4
+	(13, 'N', 'Porta'), -- Vano 6-4
+	(15, 'E', 'Porta'), -- Vano 5-null
+	(23, 'E', 'Porta'); -- Vano 7-8
 
 insert into Finestra (Muro, PuntoCardinale)
 values
 	(1, 'E'), (1, 'E'), (1, 'E'), (2, 'N'), (6, 'S'),
-	(8, 'N'),
-	(12, 'N'), (13, 'E'),
-	(20, 'E'), 
-	(23, 'S'), (23, 'S'),
-	(27, 'S'), (28, 'E'),
+	(7, 'N'),
+	(10, 'N'), (11, 'E'),
+	(15, 'E'), 
+	(16, 'S'), (16, 'S'),
+	(18, 'S'), (19, 'E'),
 	
-	(29, 'N'), (29, 'N'), (29, 'N'),
-	(31, 'S'), (31, 'S'),
-	(32, 'E'), (32, 'E');
-	
-
-
+	(21, 'N'), (21, 'N'), (21, 'N'),
+	(20, 'S'), (20, 'S'),
+	(23, 'E'), (23, 'E');
 
 insert into Progetto (Edificio, DataPresentazione, DataApprovazione, DataInizio, StimaFine, DataFine)
 values
@@ -427,13 +424,13 @@ values
 
 insert into Sensore (Muro, Tipologia, Soglia, Longitudine, Latitudine)
 values
-	(35, 'Pluviometro', 10, 43.640578, 10.290558), -- 1
-	(9, 'Temperatura', 40, 43.640578, 10.290558), -- 2
-	(2, 'Temperatura', 40, 43.640578, 10.290558), -- 3
-	(36, 'Temperatura', 46, 43.640578, 10.290558), -- 4
-	(18, 'Temperatura', 46, 43.640578, 10.290558), -- 5
-	(20, 'Allungamento', 1.00, 43.640578, 10.290558), -- 6 cm
-	(36, 'Accellerometro', 1.9, 43.640578, 10.290558); -- 7
+	(23, 'Pluviometro', 10, 43.640578, 10.290558), -- 1
+	(24, 'Temperatura', 40, 43.640578, 10.290558), -- 2
+	(10, 'Temperatura', 40, 43.640578, 10.290558), -- 3
+	(2, 'Temperatura', 46, 43.640578, 10.290558), -- 4
+	(5, 'Temperatura', 46, 43.640578, 10.290558), -- 5
+	(15, 'Allungamento', 1.00, 43.640578, 10.290558), -- 6 cm
+	(23, 'Accellerometro', 1.9, 43.640578, 10.290558); -- 7
 
 
 INSERT INTO Misura (Sensore,Timestamp,ValoreX,ValoreY,ValoreZ)
@@ -447,7 +444,7 @@ call insertRowsToMisura_Pluviometro();
 
 
 INSERT INTO Alert (Sensore,Timestamp, ValoreSuperamento)
-	select m.Sensore, m.Timestamp, IF(m.ValoreX <= S.Soglia, IF(m.ValoreY <= S.Soglia, IF(m.ValoreZ <= s.Soglia, NULL, m.ValoreZ), m.ValoreY), m.ValoreX)
+	select m.Sensore, m.Timestamp, IF(m.ValoreX <= s.Soglia, IF(m.ValoreY <= s.Soglia, IF(m.ValoreZ <= s.Soglia, NULL, m.ValoreZ), m.ValoreY), m.ValoreX)
 	from Misura m
 	inner join Sensore s on s.codSensore = m.Sensore
 	where (m.ValoreX > s.Soglia or m.ValoreY > s.Soglia or m.ValoreZ > s.Soglia);
