@@ -84,71 +84,34 @@ delimiter ;
 
 -- OP. 5 Stampa la busta paga relativa ad un operaio specificando anno e mese di interesse
 
-drop procedure if exists calcola_bustapaga
+drop procedure if exists calcola_bustapaga;
 delimiter $$
 
 create procedure calcola_bustapaga (in _dipendente char(16), in anno int, in mese int)
 begin
-    select count(*) * PagaOraria /12 as BustaPaga
+    select count(*)*8 * PagaOraria as BustaPaga
     from Turno T inner join Lavoratore L on T.Lavoratore = L.CodFiscale
     where year(T.TimestampInizio) = anno and month(T.TimestampInizio) = mese and L.CodFiscale = _dipendente;
 end $$
-delimiter ;
-                                 
-                                 
+delimiter ;  
 
 -- OP. 6------------------------------------------------
 DROP PROCEDURE IF EXISTS NewTurnoOperaio;
 DELIMITER $$
 
-CREATE PROCEDURE NewTurnoOperaio(IN CodLavoro_f INT, IN Lavoratore_f VARCHAR(16), IN Inizio_f DATETIME(3), IN Fine_f DATETIME(3));
+CREATE PROCEDURE NewTurnoOperaio(IN CodLavoro_f INT, IN CapoCantiere_f CHAR(16), IN Lavoratore_f CHAR(16), IN Inizio_f DATETIME(3), IN Fine_f DATETIME(3))
     BEGIN
-        DECLARE CapoCantiere_f VARCHAR(16);
-        SELECT CapoCantiere INTO CapoCantiere_f FROM Turno WHERE CodLavoro_f=Lavoro;
-
-        -- Controllo che il turno non duri troppo poco --
-        DECLARE OreDiLavoro FLOAT;
-        SET OreDiLavoro=(Fine_f-Inizio_f);
-        IF OreDiLavoro <= 0.015 THEN
-            SIGNAL SQLSTATE "45000"
-            SET MESSAGE_TEXT = "Il turno deve durare più di 1 minuto!!";
-        END IF;
-        
-        -- Controllo sovrapposizione turni dell'operaio
-        IF (SELECT COUNT(*) FROM Turno t WHERE t.Lavoratore=Lavoratore_f
-            AND
-            ((t.TimestampInizio >= Inizio_f AND t.TimestampInizio < Inizio_f + INTERVAL OreDiLavoro * 60 MINUTE) OR
-             (t.TimestampInizio + INTERVAL OreDiLavoro*60 MINUTE > Inizio_f AND t.TimestampInizio+ INTERVAL OreDiLavoro*60 MINUTE <= Inizio_f + INTERVAL OreDiLavoro*60 MINUTE)
-            )
-            ) > 0 then
-		    signal sqlstate "45000" 
-            SET MESSAGE_TEXT = "Il turno che si vuole inserire è in conflitto con un'altro turno assegnato all'operaio";
-        end if;
-
-        -- Controllo massimo numero di operai che lavorano contemporaneamente
-        IF (SELECT COUNT(DISTINCT Lavoratore)+1 FROM Turno t WHERE t.Lavoro = CodLavoro_f AND Lavoratore_f != Lavoratore AND 
-    (	(t.TimestampInizio <= Inizio_f AND t.TimestampInizio + INTERVAL OreDiLavoro*60 MINUTE > Inizio_f )
-        OR
-		(t.TimestampInizio > Inizio_f AND t.TimestampInizio < Inizio_f + INTERVAL OreDiLavoro*60 MINUTE )
-    )
-    ) > (SELECT max_operai FROM Lavoro WHERE id_lavoro = _id_lavoro) then
-		SIGNAL SQLSTATE "45000" 
-        SET MESSAGE_TEXT = "E' stato raggiunto il numero massimo di lavoratori che possono lavorare contemporaneamente";
-    END IF;
-    SET Fine_f = Inizio_f+ OreDiLavoro;
-
-    INSERT INTO Turno(Lavoro, Lavoratore, TimestampInizio, TimestampFine)
-    VALUES (CodLavoro_f, Lavoratore_f, Inizio_f, Fine_f);
-
-END $$
-DELIMITER;
+		INSERT INTO Turno
+		VALUES ( Inizio_f, Fine_f, CodLavoro_f, CapoCantiere_f, Lavoratore_f);
+	END $$
+DELIMITER ;
 
 
 -- OP. 7------------------------------------------------
 DROP PROCEDURE IF EXISTS RischiAnnuiEdificio;
 DELIMITER $$
 
-CREATE PROCEDURE RischiAnnuiEdificio(IN CodEdificio_f INT UNSIGNED)
+CREATE PROCEDURE RischiAnnuiEdificio(IN CodEdificio_f INT)
     BEGIN  
         DECLARE sede VARCHAR(45);
         SET sede = (
@@ -168,7 +131,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS InfoAlert;
 DELIMITER $$
 
-CREATE PROCEDURE InfoAlert(IN TimeStamp_f TIMESTAMP, IN CodSensore_f INT, OUT CodEdificio_f INT, OUT Piano_f INT, OUT CodVano_f INT, OUT CodMuro_f INT, OUT Pericolosità FLOAT)
+CREATE PROCEDURE InfoAlert(IN TimeStamp_f TIMESTAMP, IN CodSensore_f INT, OUT CodEdificio_f INT, OUT Piano_f INT, OUT CodVano_f INT, OUT CodMuro_f INT, OUT Pericolosita FLOAT)
     BEGIN
         DECLARE soglia_f FLOAT;
 
@@ -179,7 +142,7 @@ CREATE PROCEDURE InfoAlert(IN TimeStamp_f TIMESTAMP, IN CodSensore_f INT, OUT Co
         );
 
         SET CodVano_f = (
-            SELECT Vano
+            SELECT Vano1
             FROM Muro
             WHERE CodMuro = CodMuro_f
         );
@@ -202,11 +165,11 @@ CREATE PROCEDURE InfoAlert(IN TimeStamp_f TIMESTAMP, IN CodSensore_f INT, OUT Co
             WHERE CodSensore = CodSensore_f
         );
 
-        SET Pericolosità = (
-            SELECT Valore
+        SET Pericolosita = (
+            SELECT ValoreSuperamento
             FROM Alert
             WHERE TimeStamp = TimeStamp_f
-                AND CodSensore = CodSensore_f
-        ) - soglia_g;
-    END $$
+                AND Sensore = CodSensore_f
+        ) - soglia_f;
+    END $$ 
 DELIMITER ;
