@@ -102,72 +102,51 @@ begin
 end $$
 delimiter ;
 
-/* Costo del lavoro 
-drop function if exists calcolo_costo_lavoro;
-delimiter $$
-create function calcolo_costo_lavoro(_CodLavoro int) returns decimal(10,2) reads sql data
-begin
-	declare costo_impiego, costo_materiale, costo_capocantiere decimal(10,2) default 0;
-
-	select sum(L.PagaOraria * (TIMESTAMPDIFF(HOUR, T.TimestampInizio, T.TimestampFine))) -- Calcola la somma della paga di operaio conteggiando le ore di lavoro svolte
-    into costo_impiego
-	from Turno T inner join Lavoratore L on T.Lavoratore = L.CodFiscale
-	where T.Lavoro = _CodLavoro;
-    
-	select sum(Costo)
-    into costo_materiale
-    from (
-        select M.CostoLotto, M.Quantita, M.CostoLotto * M.Quantita as Costo
-        from Lavoro L inner join Materiale M on L.CodLavoro = M.Lavoro
-        where L.CodLavoro = _CodLavoro
-    ) as C;
-    
-    select sum(C.PagaOraria * (TIMESTAMPDIFF(HOUR,T.TimestampInizio, T.TimestampFine)))
-    into costo_capocantiere
-    from Turno T inner join CapoCantiere C on T.CapoCantiere = C.CodFiscale
-    where T.Lavoro = _CodLavoro;
-    return costo_impiego + costo_materiale + costo_capocantiere;
-end $$
-delimiter ;
-
-
-drop trigger if exists costo_progetto;
-delimiter $$
-create trigger costo_progetto 
-after insert on Lavoro for each row
-begin
-    declare costo_impiego, costo_materiale, costo_capocantiere, costo_tot decimal(10,2) default 0;
-
-    select sum(L.PagaOraria * (TIMESTAMPDIFF(HOUR, T.TimestampInizio, T.TimestampFine))) -- Calcola la somma della paga di operaio conteggiando le ore di lavoro svolte
-    into costo_impiego
-	from Turno T inner join Lavoratore L on T.Lavoratore = L.CodFiscale
-	where T.Lavoro = _CodLavoro;
-    
-	select sum(Costo)
-    into costo_materiale
-    from (
-        select M.CostoLotto, M.Quantita, M.CostoLotto * M.Quantita as Costo
-        from Lavoro L inner join Materiale M on L.CodLavoro = M.Lavoro
-        where L.CodLavoro = _CodLavoro
-    ) as C;
-    
-    select sum(C.PagaOraria * (TIMESTAMPDIFF(HOUR,T.TimestampInizio, T.TimestampFine)))
-    into costo_capocantiere
-    from Turno T inner join CapoCantiere C on T.CapoCantiere = C.CodFiscale
-    where T.Lavoro = _CodLavoro;
-    costo_tot = costo_impiego + costo_materiale + costo_capocantiere;
-
-    
-	    update Progetto
-		set CostoProgetto = CostoProgetto + calcolo_costo_lavoro(new.CodLavoro)
-		where CodProgetto = (select Progetto from StadioAvanzamentoProgetto where CodLavoro = new.Stadio);
-    
-end $$
-delimiter ;
-*/
-
-
-
+-- Event Aggiornamento Costo Progetto
+DROP EVENT IF EXISTS AggiornamentoCosto;
+DELIMITER $$
+CREATE EVENT AggiornamentoCosto
+ON SCHEDULE EVERY 1 DAY
+DO
+    BEGIN
+    	WITH ProgettoScelto AS(
+		SELECT CodProgetto as ProgettoEdilizio
+        FROM Progetto
+        WHERE DataFine IS NULL
+	),
+    StadioAssociato AS(
+		SELECT CodStadio as StadioDiAvanzamento
+        FROM ProgettoScelto p NATURAL JOIN StadioAvanzamentoProgetto s
+        WHERE DataCompletamento IS NULL
+    ),
+    TurniLavoratoriAssociati AS(
+		SELECT StadioDiAvanzamento, Lavoratore as CodiceFiscale, TIMESTAMPDIFF(HOUR,T.TimestampInizio, T.TimestampFine) as OreDiLavoro
+        FROM StadioAssociato s NATURAL JOIN Turno t
+        WHERE day(t.TimeStampInizio)=current_date
+        GROUP BY t.Lavoratore
+    ),
+    TurniCapocantieriAssociati AS(
+		SELECT StadioDiAvanzamento, Capocantiere as CodFiscale, TIMESTAMPDIFF(HOUR,T.TimestampInizio, T.TimestampFine) as OreDiLavoro
+        FROM StadioAssociato s NATURAL JOIN Turno t
+        WHERE day(t.TimeStampInizio)=current_date
+        GROUP BY t.CapoCantiere
+    ),
+    CostoDelPersonale AS(
+		SELECT CostoPersonale
+        FROM ( SELECT PagaOraria*OreDiLavoro AS CostoPersonale FROM TurniLavoratoriAssociati NATURAL JOIN Lavoratore ) as L
+			 UNION ALL
+			 ( SELECT PagaOraria*OreDiLavoro AS CostoPersonale FROM TurniCapocantieriAssociati NATURAL JOIN Capocantiere)
+    ),
+    CostoDaAggiornare AS(
+		SELECT SUM(CostoPersonale) AS CostoPersonale
+        FROM CostoDelPersonale
+    )
+	UPDATE Progetto
+    SET CostoProgetto = IFNULL(Costo,0) + ( SELECT CostoPersonale FROM CostoDaAggiornare)
+    WHERE CodProgetto = (SELECT CodProgetto FROM ProgettoScelto)
+		AND Edificio = (SELECT CodEdifico FROM Edificio where DataRealizzazione IS NULL); 
+END $$
+DELIMITER ;
 
 /* L'ora di inizio e fine di un turno di un lavoratore non sono coerenti */
 drop trigger if exists check_orario_turno_lavoratore;
