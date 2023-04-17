@@ -139,7 +139,7 @@ values
 ----------------------------------
 -- Insert Calamita
 ----------------------------------
-INSERT INTO Calamita (AreaGeografica, Tipologia, Data, LivelloIntensita, Longitudine, Latitudine)
+INSERT INTO Calamita (AreaGeografica, Tipologia, Data, LivelloIntensita, Latitudine, Longitudine)
 values
 	('Sud', 'Gelamento', '2023-02-03', 3, 15.996094, 40.287907),
 	('Nord', 'Valanga', '2023-02-10', 5, 12.524414, 41.934977),
@@ -169,7 +169,7 @@ values
 ----------------------------------
 -- Insert Edificio
 ----------------------------------
-insert into Edificio (Tipologia, DataRealizzazione, StatoEdificio, Longitudine, Latitudine, AreaGeografica)
+insert into Edificio (Tipologia, DataRealizzazione, StatoEdificio, Latitudine, Longitudine, AreaGeografica)
 values 
 	('Villetta', '2020-07-13', 1, 43.640578, 10.290558, 'Centro'), -- CodEdificio = 1
 	('Condominio', '1989-05-21', 2, 38.153594, 15.660652, 'Sud'); -- CodEdificio = 2
@@ -422,7 +422,7 @@ values
 	(9, 'KKK', 'Vernice', 0.01);
 
 
-insert into Sensore (Muro, Tipologia, Soglia, Longitudine, Latitudine)
+insert into Sensore (Muro, Tipologia, Soglia, Latitudine, Longitudine)
 values
 	(23, 'Pluviometro', 10, 43.640578, 10.290558), -- 1
 	(24, 'Temperatura', 40, 43.640578, 10.290558), -- 2
